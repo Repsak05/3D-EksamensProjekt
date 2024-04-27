@@ -1,8 +1,8 @@
 const canvasX = 800;
 const canvasY = 800
 
-const FOV = 800; //Distance from cam to actual Screen
-const camOffset = {x : 400, y: 400};
+const FOV = -800; //Distance from cam to actual Screen
+const camOffset = {x : 400, y: 400, z : FOV};
 
 const rotSpeedX = 1.2;
 const rotSpeedY = 2.1;
@@ -37,9 +37,9 @@ function setup()
   sliderXPos.position(10,10);
 
   sliderYPos = createSlider(-100, 100, 2);
-  sliderYPos.position(10,300);
+  sliderYPos.position(10,30);
 
-  sliderZPos = createSlider(10, 100, 70);
+  sliderZPos = createSlider(10, 200, 140);
   sliderZPos.position(10,50);
 
   //Sliders; Sizes (width, height, depth)
@@ -73,10 +73,14 @@ function draw()
   currentAngleZ += rotSpeedZ;
 
   let box = new Box(sliderXPos.value(), sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
-  box.rotationX(sliderAngleX.value());
-  box.rotationY(sliderAngleY.value());
-  box.rotationZ(sliderAngleZ.value());
+  box.rotationX(currentAngleX);
+  box.rotationY(currentAngleY);
+  box.rotationZ(currentAngleZ);
+  // box.rotationX(sliderAngleX.value());
+  // box.rotationY(sliderAngleY.value());
+  // box.rotationZ(sliderAngleZ.value());
   box.draw();
+  box.showSurface();
 }
 
 class Box{
@@ -135,6 +139,79 @@ class Box{
     circle(centrum.x, centrum.y, 10);
   }
 
+  showSurface()
+  {
+    //Draw all triangles and fill them with colors in correct order
+    noStroke();
+      
+    const sideDiagonal = { // z-distance relative to camera
+      font   : calculateAveragePoint(this.points3D.p1, this.points3D.p3).z - FOV,
+      back   : calculateAveragePoint(this.points3D.p5, this.points3D.p7).z - FOV,
+      right  : calculateAveragePoint(this.points3D.p2, this.points3D.p7).z - FOV,
+      left   : calculateAveragePoint(this.points3D.p1, this.points3D.p8).z - FOV,
+      top    : calculateAveragePoint(this.points3D.p5, this.points3D.p2).z - FOV,
+      bottom : calculateAveragePoint(this.points3D.p8, this.points3D.p3).z - FOV,
+    }
+
+    // Sort the array based on the values in descending order
+    let sortedSidesByDistance = [];
+
+    for(let key in sideDiagonal)
+    {
+      sortedSidesByDistance.push([key, sideDiagonal[key]]);
+    }
+    sortedSidesByDistance.sort((a, b) => b[1] - a[1]);
+
+    //Render in correct order
+    for(let sideAndDist of sortedSidesByDistance)
+    {
+      switch(sideAndDist[0])
+      {
+        case "font":
+          fill(0,0,255);
+          drawTriangle(this.points2D.p1,this.points2D.p2,this.points2D.p3);
+          drawTriangle(this.points2D.p1,this.points2D.p3,this.points2D.p4);
+          break;
+
+        case "back":
+          fill(255,0,0);
+          drawTriangle(this.points2D.p5,this.points2D.p6,this.points2D.p7);
+          drawTriangle(this.points2D.p5,this.points2D.p7,this.points2D.p8);
+          break;
+
+        case "right":
+          fill(0,255,0);
+          drawTriangle(this.points2D.p2,this.points2D.p6,this.points2D.p7);
+          drawTriangle(this.points2D.p2,this.points2D.p7,this.points2D.p3);
+          break;
+
+        case "left":
+          fill(255,255,0);
+          drawTriangle(this.points2D.p1,this.points2D.p5,this.points2D.p8);
+          drawTriangle(this.points2D.p1,this.points2D.p8,this.points2D.p4);
+          break;
+
+        case "top":
+          fill(0,255,255);
+          drawTriangle(this.points2D.p1,this.points2D.p5,this.points2D.p2);
+          drawTriangle(this.points2D.p5,this.points2D.p2,this.points2D.p6);
+          break;
+
+        case "bottom":
+          fill(255,0,255);
+          drawTriangle(this.points2D.p4,this.points2D.p8,this.points2D.p3);
+          drawTriangle(this.points2D.p8,this.points2D.p7,this.points2D.p3);
+          break;
+          
+        default:
+          console.log("Side not found: " + sideAndDist[0]);
+      }
+    }
+    //Reset values
+    fill(0);
+    stroke(0);
+  }
+
   rotationX(angle = 5) //Rotate around x-axis
   {
     for(let points in this.points3D)
@@ -154,7 +231,6 @@ class Box{
       point.y = this.yPos + vecLength * sin(newAngle);
       point.z = this.zPos + vecLength * cos(newAngle);
     }
-
   }
 
   rotationY(angle = 5) //Rotate around y-axis
@@ -176,7 +252,6 @@ class Box{
       point.x = this.xPos + vecLength * cos(newAngle);
       point.z = this.zPos + vecLength * sin(newAngle);
     }
-
   }
 
   rotationZ(angle = 5) //Rotate around z-axis
@@ -190,11 +265,11 @@ class Box{
       const relativePointY = point.y - this.yPos;
 
       //Find current angle and calc new
-      let currentAngle = atan2(relativePointY, relativePointX);
-      let newAngle = currentAngle + angle;
+      const currentAngle = atan2(relativePointY, relativePointX);
+      const newAngle = currentAngle + angle;
     
       //Calculate new points and un-relative points
-      let vecLength = sqrt(relativePointX * relativePointX + relativePointY * relativePointY);
+      const vecLength = sqrt(relativePointX * relativePointX + relativePointY * relativePointY);
       point.x = this.xPos + vecLength * cos(newAngle);
       point.y = this.yPos + vecLength * sin(newAngle);
     }
@@ -208,13 +283,30 @@ function drawRectFromPoints(p1,p2,p3,p4)
   line(p2.x, p2.y, p3.x, p3.y);
   line(p3.x, p3.y, p4.x, p4.y);
   line(p4.x, p4.y, p1.x, p1.y);
+
+  circle(p1.x,p1.y, 10);
+  circle(p2.x,p2.y, 10);
+  circle(p3.x,p3.y, 10);
+  circle(p4.x,p4.y, 10);
 }
 
 function dotPlacementCalculator(x,y,z)
 {
   //Make a 3D point apear in 2D space
-  let x2D = (x * FOV) / z + camOffset.x;
-  let y2D = (y * FOV) / z + camOffset.y;
+  let x2D = (x * abs(FOV)) / z + camOffset.x;
+  let y2D = (y * abs(FOV)) / z + camOffset.y;
 
   return {x : x2D, y : y2D};
+}
+
+function drawTriangle(p1, p2, p3)
+{
+  triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+}
+
+function calculateAveragePoint(p1, p2)
+{
+  const pAvg = {x : (p1.x+p2.x)/2, y : (p1.y+p2.y)/2, z : (p1.z+p2.z)/2};
+
+  return pAvg;
 }
