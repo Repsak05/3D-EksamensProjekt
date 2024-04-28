@@ -3,6 +3,7 @@ const canvasY = 800
 
 const FOV = -800; //Distance from cam to actual Screen
 const camOffset = {x : 400, y: 400, z : FOV};
+let sunPosition = {x : 50, y : 50, z : -FOV}
 
 const rotSpeedX = 1.2;
 const rotSpeedY = 2.1;
@@ -26,6 +27,9 @@ let sliderDepth;
 let sliderAngleX;
 let sliderAngleY;
 let sliderAngleZ;
+
+//Sun slider
+let sliderSunZ;
 
 function setup()
 {
@@ -62,25 +66,45 @@ function setup()
   sliderAngleZ = createSlider(0,1080, 0);
   sliderAngleZ.position(270,50);
 
+  //Sun-Z
+  sliderSunZ = createSlider(-100, 100, 0);
+  sliderSunZ.position(10,100);
+
 }
 
 function draw()
 {
   background(220);
+
+  //Creating sun
+  // sunPosition.x = mouseX;
+  // sunPosition.y = mouseY;
+  sunPosition.z = sliderSunZ.value();
+  let sunPos = dotPlacementCalculator(sunPosition.x, sunPosition.y, sliderSunZ.value() - FOV);
+  // circle(sunPos.x - camOffset.x, sunPos.y - camOffset.y, 50);
+  text(sliderSunZ.value() - FOV, 600, 30);
+
+  let kindaSun = new Box(sunPosition.x, sunPosition.y, sliderSunZ.value() - FOV, 30, 30, 30);
+  kindaSun.draw();
+
+  // console.log(sunPos)
   
   currentAngleX += rotSpeedX;
   currentAngleY += rotSpeedY;
   currentAngleZ += rotSpeedZ;
 
   let box = new Box(sliderXPos.value(), sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
-  box.rotationX(currentAngleX);
-  box.rotationY(currentAngleY);
-  box.rotationZ(currentAngleZ);
-  // box.rotationX(sliderAngleX.value());
-  // box.rotationY(sliderAngleY.value());
-  // box.rotationZ(sliderAngleZ.value());
+  // box.rotationX(currentAngleX);
+  // box.rotationY(currentAngleY);
+  // box.rotationZ(currentAngleZ);
+  box.rotationX(sliderAngleX.value());
+  box.rotationY(sliderAngleY.value());
+  box.rotationZ(sliderAngleZ.value());
   box.draw();
+  box.ajustLighting(sunPosition);
   box.showSurface();
+
+  // console.log(`POS :x_>  ${box.xPos} y : ${box.yPos}  -> z : ${box.zPos}` )
 }
 
 class Box{
@@ -92,6 +116,17 @@ class Box{
     this.width = width;
     this.height = height;
     this.depth = depth;
+
+    text(this.zPos, 500, 80);
+
+    this.faceColor = {
+      front  : [0, 0, 255],
+      back   : [255, 0, 0],
+      right  : [0, 255, 0],
+      left   : [255, 255, 0],
+      top    : [0, 255, 255],
+      bottom : [255, 0, 255],
+    }
   
 
     this.points3D = {
@@ -145,7 +180,7 @@ class Box{
     noStroke();
       
     const sideDiagonal = { // z-distance relative to camera
-      font   : calculateAveragePoint(this.points3D.p1, this.points3D.p3).z - FOV,
+      front   : calculateAveragePoint(this.points3D.p1, this.points3D.p3).z - FOV,
       back   : calculateAveragePoint(this.points3D.p5, this.points3D.p7).z - FOV,
       right  : calculateAveragePoint(this.points3D.p2, this.points3D.p7).z - FOV,
       left   : calculateAveragePoint(this.points3D.p1, this.points3D.p8).z - FOV,
@@ -153,7 +188,7 @@ class Box{
       bottom : calculateAveragePoint(this.points3D.p8, this.points3D.p3).z - FOV,
     }
 
-    // Sort the array based on the values in descending order
+    // Sort the object based on the values in descending order (Surfaces furthest away)
     let sortedSidesByDistance = [];
 
     for(let key in sideDiagonal)
@@ -167,38 +202,38 @@ class Box{
     {
       switch(sideAndDist[0])
       {
-        case "font":
-          fill(0,0,255);
+        case "front":
+          fill(this.faceColor.front);
           drawTriangle(this.points2D.p1,this.points2D.p2,this.points2D.p3);
           drawTriangle(this.points2D.p1,this.points2D.p3,this.points2D.p4);
           break;
 
         case "back":
-          fill(255,0,0);
+          fill(this.faceColor.back);
           drawTriangle(this.points2D.p5,this.points2D.p6,this.points2D.p7);
           drawTriangle(this.points2D.p5,this.points2D.p7,this.points2D.p8);
           break;
 
         case "right":
-          fill(0,255,0);
+          fill(this.faceColor.right);
           drawTriangle(this.points2D.p2,this.points2D.p6,this.points2D.p7);
           drawTriangle(this.points2D.p2,this.points2D.p7,this.points2D.p3);
           break;
 
         case "left":
-          fill(255,255,0);
+          fill(this.faceColor.left);
           drawTriangle(this.points2D.p1,this.points2D.p5,this.points2D.p8);
           drawTriangle(this.points2D.p1,this.points2D.p8,this.points2D.p4);
           break;
 
         case "top":
-          fill(0,255,255);
+          fill(this.faceColor.top);
           drawTriangle(this.points2D.p1,this.points2D.p5,this.points2D.p2);
           drawTriangle(this.points2D.p5,this.points2D.p2,this.points2D.p6);
           break;
 
         case "bottom":
-          fill(255,0,255);
+          fill(this.faceColor.bottom);
           drawTriangle(this.points2D.p4,this.points2D.p8,this.points2D.p3);
           drawTriangle(this.points2D.p8,this.points2D.p7,this.points2D.p3);
           break;
@@ -211,6 +246,47 @@ class Box{
     fill(0);
     stroke(0);
   }
+
+  //Replace with function that makes all calculations (takes input: sunPosition, cubeCenter, & faceCenter)
+  ajustLighting(sunPosition) //sunPosition includes .x , .y and .z value
+  {
+    const facesCentralPoint = { //Has x, y and z pos of center point
+      front  : calculateAveragePoint(this.points3D.p1, this.points3D.p3),
+      back   : calculateAveragePoint(this.points3D.p5, this.points3D.p7),
+      right  : calculateAveragePoint(this.points3D.p2, this.points3D.p7),
+      left   : calculateAveragePoint(this.points3D.p1, this.points3D.p8),
+      top    : calculateAveragePoint(this.points3D.p5, this.points3D.p2),
+      bottom : calculateAveragePoint(this.points3D.p8, this.points3D.p3),
+    }
+
+    const facesVecToSunAndCenter = { //Includes vector from center of the face to both the sun and the center
+      front  : { sunVec : calculate3DVector(facesCentralPoint.front, sunPosition),  centerVec : calculate3DVector({x : this.xPos, y: this.yPos, z : this.zPos }, facesCentralPoint.front,)},
+      back   : { sunVec : calculate3DVector(facesCentralPoint.back, sunPosition),   centerVec : calculate3DVector({x : this.xPos, y: this.yPos, z : this.zPos }, facesCentralPoint.back,)},
+      right  : { sunVec : calculate3DVector(facesCentralPoint.right, sunPosition),  centerVec : calculate3DVector({x : this.xPos, y: this.yPos, z : this.zPos }, facesCentralPoint.right,)},
+      left   : { sunVec : calculate3DVector(facesCentralPoint.left, sunPosition),   centerVec : calculate3DVector({x : this.xPos, y: this.yPos, z : this.zPos }, facesCentralPoint.left,)},
+      top    : { sunVec : calculate3DVector(facesCentralPoint.top, sunPosition),    centerVec : calculate3DVector({x : this.xPos, y: this.yPos, z : this.zPos }, facesCentralPoint.top,)},
+      bottom : { sunVec : calculate3DVector(facesCentralPoint.bottom, sunPosition), centerVec : calculate3DVector({x : this.xPos, y: this.yPos, z : this.zPos }, facesCentralPoint.bottom,)},
+    }
+
+    const faceIntensity = { //Intensity from 1 : -1  |  Dot product from vec1(faceCenter, sun) and vec2(cubeCenter, faceCenter)
+      front  : calculateDotProductOf3DVector(calculate3DUnitVector(facesVecToSunAndCenter.front.sunVec),  calculate3DUnitVector(facesVecToSunAndCenter.front.centerVec)),
+      back   : calculateDotProductOf3DVector(calculate3DUnitVector(facesVecToSunAndCenter.back.sunVec),   calculate3DUnitVector(facesVecToSunAndCenter.back.centerVec)),
+      right  : calculateDotProductOf3DVector(calculate3DUnitVector(facesVecToSunAndCenter.right.sunVec),  calculate3DUnitVector(facesVecToSunAndCenter.right.centerVec)),
+      left   : calculateDotProductOf3DVector(calculate3DUnitVector(facesVecToSunAndCenter.left.sunVec),   calculate3DUnitVector(facesVecToSunAndCenter.left.centerVec)),
+      top    : calculateDotProductOf3DVector(calculate3DUnitVector(facesVecToSunAndCenter.top.sunVec),    calculate3DUnitVector(facesVecToSunAndCenter.top.centerVec)),
+      bottom : calculateDotProductOf3DVector(calculate3DUnitVector(facesVecToSunAndCenter.bottom.sunVec), calculate3DUnitVector(facesVecToSunAndCenter.bottom.centerVec)),
+    }
+
+    //Multiple intensity into faceColor's
+    for(let face in this.faceColor)
+    {
+      for(let i = 0; i < this.faceColor[face].length; i++)
+      {
+        this.faceColor[face][i] *= (faceIntensity[face] + 1) / 2; // (..+1)/2 because before, the inteval was from -1 to 1
+      }
+    }
+  }
+
 
   rotationX(angle = 5) //Rotate around x-axis
   {
@@ -290,7 +366,7 @@ function drawRectFromPoints(p1,p2,p3,p4)
   circle(p4.x,p4.y, 10);
 }
 
-function dotPlacementCalculator(x,y,z)
+function dotPlacementCalculator(x, y, z)
 {
   //Make a 3D point apear in 2D space
   let x2D = (x * abs(FOV)) / z + camOffset.x;
@@ -309,4 +385,29 @@ function calculateAveragePoint(p1, p2)
   const pAvg = {x : (p1.x+p2.x)/2, y : (p1.y+p2.y)/2, z : (p1.z+p2.z)/2};
 
   return pAvg;
+}
+
+function calculate3DVector(p1,p2)
+{
+  return {x : p2.x - p1.x, y : p2.y - p1.y, z : p2.z - p1.z};
+}
+
+function calculate3DVectorLength(vec)
+{
+  return sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+}
+
+function calculateDotProductOf3DVector(vec1, vec2)
+{
+  const dotProduct = vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+  
+  return dotProduct;
+}
+
+function calculate3DUnitVector(vec)
+{
+  const vectorLength  = calculate3DVectorLength(vec);
+  const unitVector = {x : vec.x / vectorLength, y : vec.y / vectorLength, z : vec.z / vectorLength};
+
+  return unitVector;
 }
