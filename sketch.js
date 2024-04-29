@@ -1,13 +1,12 @@
-const canvasX = 800;
-const canvasY = 800
+const canvasX = 700;
+const canvasY = 700;
 
 const FOV = -800; //Distance from cam to actual Screen
 const camOffset = {x : 400, y: 400, z : FOV};
-let sunPosition = {x : 50, y : 50, z : -FOV}
 
-const rotSpeedX = 1.2;
-const rotSpeedY = 2.1;
-const rotSpeedZ = 3.7;
+const rotSpeedX = .5;
+const rotSpeedY = .7;
+const rotSpeedZ = .11;
 
 let currentAngleX = 0
 let currentAngleY = 0
@@ -67,7 +66,7 @@ function setup()
   sliderAngleZ.position(270,50);
 
   //Sun-Z
-  sliderSunZ = createSlider(-100, 100, 0);
+  sliderSunZ = createSlider(-100, 150, 10);
   sliderSunZ.position(10,100);
 
 }
@@ -76,35 +75,25 @@ function draw()
 {
   background(220);
 
-  //Creating sun
-  // sunPosition.x = mouseX;
-  // sunPosition.y = mouseY;
-  sunPosition.z = sliderSunZ.value();
-  let sunPos = dotPlacementCalculator(sunPosition.x, sunPosition.y, sliderSunZ.value() - FOV);
-  // circle(sunPos.x - camOffset.x, sunPos.y - camOffset.y, 50);
-  text(sliderSunZ.value() - FOV, 600, 30);
-
-  let kindaSun = new Box(sunPosition.x, sunPosition.y, sliderSunZ.value() - FOV, 30, 30, 30);
-  kindaSun.draw();
-
-  // console.log(sunPos)
-  
   currentAngleX += rotSpeedX;
   currentAngleY += rotSpeedY;
   currentAngleZ += rotSpeedZ;
 
+
+  //Create new box
   let box = new Box(sliderXPos.value(), sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
-  // box.rotationX(currentAngleX);
-  // box.rotationY(currentAngleY);
-  // box.rotationZ(currentAngleZ);
-  box.rotationX(sliderAngleX.value());
-  box.rotationY(sliderAngleY.value());
-  box.rotationZ(sliderAngleZ.value());
+  box.rotationX(currentAngleX);
+  box.rotationY(currentAngleY);
+  box.rotationZ(currentAngleZ);
+  // box.rotationX(sliderAngleX.value() + 40);
+  // box.rotationY(sliderAngleY.value() + 10);
+  // box.rotationZ(sliderAngleZ.value() + 20);
+  
   box.draw();
-  box.ajustLighting(sunPosition);
+  box.ajustLighting({x : mouseX, y : mouseY, z : 40 + sliderSunZ.value()});
   box.showSurface();
 
-  // console.log(`POS :x_>  ${box.xPos} y : ${box.yPos}  -> z : ${box.zPos}` )
+
 }
 
 class Box{
@@ -250,6 +239,14 @@ class Box{
   //Replace with function that makes all calculations (takes input: sunPosition, cubeCenter, & faceCenter)
   ajustLighting(sunPosition) //sunPosition includes .x , .y and .z value
   {
+    //Add offset to sun-position:
+    sunPosition = {x : (sunPosition.x - camOffset.x) / (abs(FOV) / sunPosition.z) , y : (sunPosition.y - camOffset.y) / (abs(FOV) / sunPosition.z), z : sunPosition.z};
+    console.log("Sun z-value: " + sunPosition.z  + "\nThis z-pos: " + this.zPos + "\n| Dim: " + `${this.height}, ${this.width}, ${this.depth}`);
+    
+    //Draw circle as pointer to sun
+    let circleSunPos = dotPlacementCalculator(sunPosition.x, sunPosition.y, sunPosition.z);
+    circle(circleSunPos.x, circleSunPos.y, 100);
+
     const facesCentralPoint = { //Has x, y and z pos of center point
       front  : calculateAveragePoint(this.points3D.p1, this.points3D.p3),
       back   : calculateAveragePoint(this.points3D.p5, this.points3D.p7),
@@ -286,7 +283,6 @@ class Box{
       }
     }
   }
-
 
   rotationX(angle = 5) //Rotate around x-axis
   {
