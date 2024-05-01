@@ -5,6 +5,8 @@ class Box{
       this.xPos = xPos;
       this.yPos = yPos;
       this.zPos = zPos;
+      this.centerPoint = {x : this.xPos, y : this.yPos, z : this.zPos};
+      console.log(this.centerPoint.length);
       this.width = width;
       this.height = height;
       this.depth = depth;
@@ -66,7 +68,7 @@ class Box{
       circle(centrum.x, centrum.y, 10);
     }
   
-    showSurface()
+    showSurface() //Gives faces colors and calculates when to render each face
     {
       //Draw all triangles and fill them with colors in correct order
       noStroke();
@@ -140,27 +142,25 @@ class Box{
     }
   
     //Replace with function that makes all calculations (takes input: sunPosition, cubeCenter, & faceCenter)
-    ajustLighting(sunPosition) //sunPosition includes .x , .y and .z value
+    ajustLighting(sunPosition) //sunPosition includes .x , .y and .z position
     {
-      //Add offset to sun-position:
+      //Add offset to sun-position: from 2D to 3D kinda
       sunPosition = {x : (sunPosition.x - camOffset.x) / (abs(FOV) / sunPosition.z) , y : (sunPosition.y - camOffset.y) / (abs(FOV) / sunPosition.z), z : sunPosition.z};
       console.log("Sun z-value: " + sunPosition.z  + "\nThis z-pos: " + this.zPos + "\n| Dim: " + `${this.height}, ${this.width}, ${this.depth}`);
       
-      //Draw circle as pointer to sun
+      //Draw circle as pointer to sun (Indication of sun placement)
       let circleSunPos = dotPlacementCalculator(sunPosition.x, sunPosition.y, sunPosition.z);
       circle(circleSunPos.x, circleSunPos.y, 100);
   
       
-      //Calculate the faceIntensity of each face of the box
-      const boxCenterPos = {x : this.xPos, y : this.yPos, z : this.zPos }
-  
+      //Calculate the faceIntensity of each face of the box  
       const faceIntensity = {
-        front  : this.calculateLightIntensity(sunPosition, this.points3D.p1, this.points3D.p3, boxCenterPos),
-        back   : this.calculateLightIntensity(sunPosition, this.points3D.p5, this.points3D.p7, boxCenterPos),
-        right  : this.calculateLightIntensity(sunPosition, this.points3D.p2, this.points3D.p7, boxCenterPos),
-        left   : this.calculateLightIntensity(sunPosition, this.points3D.p1, this.points3D.p8, boxCenterPos),
-        top    : this.calculateLightIntensity(sunPosition, this.points3D.p5, this.points3D.p2, boxCenterPos),
-        bottom : this.calculateLightIntensity(sunPosition, this.points3D.p8, this.points3D.p3, boxCenterPos),
+        front  : this.calculateLightIntensity(sunPosition, this.points3D.p1, this.points3D.p3, this.centerPoint),
+        back   : this.calculateLightIntensity(sunPosition, this.points3D.p5, this.points3D.p7, this.centerPoint),
+        right  : this.calculateLightIntensity(sunPosition, this.points3D.p2, this.points3D.p7, this.centerPoint),
+        left   : this.calculateLightIntensity(sunPosition, this.points3D.p1, this.points3D.p8, this.centerPoint),
+        top    : this.calculateLightIntensity(sunPosition, this.points3D.p5, this.points3D.p2, this.centerPoint),
+        bottom : this.calculateLightIntensity(sunPosition, this.points3D.p8, this.points3D.p3, this.centerPoint),
       };
   
       //Multiple intensity into faceColor's
@@ -168,72 +168,24 @@ class Box{
       {
         for(let i = 0; i < this.faceColor[face].length; i++)
         {
-          this.faceColor[face][i] *= (faceIntensity[face] + 1) / 2; // (..+1)/2 because before, the inteval was from -1 to 1
+          this.faceColor[face][i] *= (faceIntensity[face] + 1) / 2; // (..+1)/2 because before, the inteval was from -1 to 1 | Now 0 to 1
         }
       }
     }
   
     rotationX(angle = 5) //Rotate around x-axis
     {
-      for(let points in this.points3D)
-      {
-        const point = this.points3D[points];
-  
-        //Find dist from object's centrum to point
-        const relativePointY = point.y - this.yPos;
-        const relativePointZ = point.z - this.zPos;
-  
-        //calculate current angle and new angle
-        const currentAngle = atan2(relativePointY, relativePointZ);
-        const newAngle = currentAngle + angle;
-  
-        //Calcualte new points
-        const vecLength = sqrt(relativePointY * relativePointY + relativePointZ * relativePointZ);
-        point.y = this.yPos + vecLength * sin(newAngle);
-        point.z = this.zPos + vecLength * cos(newAngle);
-      }
+      this.calculateRotation(angle, "z", "y", this.points3D, this.centerPoint);
     }
   
     rotationY(angle = 5) //Rotate around y-axis
     {
-      for(let points in this.points3D)
-      {
-        const point = this.points3D[points];
-  
-        //Find dist from object's centrum to point
-        const relativePointX = point.x - this.xPos;
-        const relativePointZ = point.z - this.zPos;
-  
-        //calculate current angle and new angle
-        const currentAngle = atan2(relativePointZ, relativePointX);
-        const newAngle = currentAngle + angle;
-  
-        //Calcualte new points
-        const vecLength = sqrt(relativePointX * relativePointX + relativePointZ * relativePointZ);
-        point.x = this.xPos + vecLength * cos(newAngle);
-        point.z = this.zPos + vecLength * sin(newAngle);
-      }
+      this.calculateRotation(angle, "x", "z", this.points3D, this.centerPoint);
     }
   
     rotationZ(angle = 5) //Rotate around z-axis
     {
-      for(let points in this.points3D)
-      { 
-        const point = this.points3D[points]; //point : {x : xVal, y : yVal, z : zVal}
-  
-        //Find dist from object's centrum to point
-        const relativePointX = point.x - this.xPos;
-        const relativePointY = point.y - this.yPos;
-  
-        //Find current angle and calc new
-        const currentAngle = atan2(relativePointY, relativePointX);
-        const newAngle = currentAngle + angle;
-      
-        //Calculate new points and un-relative points
-        const vecLength = sqrt(relativePointX * relativePointX + relativePointY * relativePointY);
-        point.x = this.xPos + vecLength * cos(newAngle);
-        point.y = this.yPos + vecLength * sin(newAngle);
-      }
+      this.calculateRotation(angle, "x", "y", this.points3D, this.centerPoint)
     }
 
     setFaceColor(faceName, rbgValue)
@@ -249,6 +201,26 @@ class Box{
 
 
     //Private functions:
+    calculateRotation(angleToRotate, hos = "x", mod = "y", pointsToRotate = this.points3D, rotateAroundReference = this.centerPoint, )
+    {
+      for(let key in pointsToRotate)
+      {
+        const point  = pointsToRotate[key];
+
+        //Find dist from object's centrum to point
+        const relativePointHos = point[hos] - rotateAroundReference[hos];
+        const relativePointMod = point[mod] - rotateAroundReference[mod];
+
+        //calculate current angle and new angle
+        const currentAngle = atan2(relativePointMod, relativePointHos);
+        const newAngle = currentAngle + angleToRotate;
+
+        //Calculate new points and un-relative points
+        const vectorLength = sqrt(relativePointHos * relativePointHos + relativePointMod * relativePointMod);
+        point[hos] = rotateAroundReference[hos] + cos(newAngle) * vectorLength;
+        point[mod] = rotateAroundReference[mod] + sin(newAngle) * vectorLength;
+      }
+    }
 
     calculateLightIntensity(sunPosition, boxCornerOne, boxOppositeCorner, boxCenter)
     {

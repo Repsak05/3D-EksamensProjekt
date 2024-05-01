@@ -106,6 +106,7 @@ function draw()
   boxTwo.setFaceColor("front", [255]);
   boxTwo.ajustLighting(mousePosition);
   boxTwo.showSurface();
+  boxTwo.calculateRotation();
 
 
 }
