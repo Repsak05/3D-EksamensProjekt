@@ -6,7 +6,6 @@ class Box{
       this.yPos = yPos;
       this.zPos = zPos;
       this.centerPoint = {x : this.xPos, y : this.yPos, z : this.zPos};
-      console.log(this.centerPoint.length);
       this.width = width;
       this.height = height;
       this.depth = depth;
@@ -188,15 +187,38 @@ class Box{
       this.calculateRotation(angle, "x", "y", this.points3D, this.centerPoint)
     }
 
-    setFaceColor(faceName, rbgValue)
+    localRotationX(angle)
+    {
+      //Create later
+    }
+    localRotationY(angle)
+    {
+      //Create later
+    }
+    localRotationZ(angle)
+    {
+      //Create later
+    }
+
+
+
+    setFaceColor(faceName, rgbValue)
     {
         if(this.faceColor[faceName])
         {
-            this.faceColor[faceName] = rbgValue;
+            this.faceColor[faceName] = rgbValue;
 
         } else {
-            console.log("Invalid fceName: " + faceName);
+            console.log("Invalid faceName: " + faceName);
         }
+    }
+    
+    setAllFacesColors(rgbValue)
+    {
+      for(let key in this.faceColor)
+      {
+        this.faceColor[key] = rgbValue.slice();
+      }
     }
 
 

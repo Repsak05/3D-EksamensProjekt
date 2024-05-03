@@ -102,11 +102,11 @@ function draw()
   boxTwo.rotationY(currentAngleZ);
   boxTwo.rotationZ(currentAngleX);
 
+  boxTwo.setAllFacesColors([0, 255, 255]);
+  boxTwo.setFaceColor("front", [255, 255, 0]);
   boxTwo.draw();
-  boxTwo.setFaceColor("front", [255]);
   boxTwo.ajustLighting(mousePosition);
   boxTwo.showSurface();
-  boxTwo.calculateRotation();
 
 
 }
@@ -147,7 +147,7 @@ function calculateAveragePoint(p1, p2)
   return pAvg;
 }
 
-function calculate3DVector(p1,p2)
+function calculate3DVector(p1, p2)
 {
   return {x : p2.x - p1.x, y : p2.y - p1.y, z : p2.z - p1.z};
 }
