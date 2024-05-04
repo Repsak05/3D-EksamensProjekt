@@ -109,6 +109,14 @@ function draw()
   boxTwo.showSurface();
 
 
+  //Tetrahedron
+  let tri = new Tetrahedron(0, 0, 100, 20);
+  tri.rotationX(currentAngleX);
+  tri.rotationY(currentAngleY);
+  tri.rotationZ(currentAngleZ);
+  tri.draw();
+
+
 }
 
 

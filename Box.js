@@ -1,15 +1,39 @@
-class Box{
+class Box extends Object3D
+{
     constructor(xPos, yPos, zPos, width, height, depth)
     {
+      //Each initial point in 3D space (Depending on position and dimensions) 
+      const points3D = {
+          //Front points clockwise from top left
+        p1 : {x : xPos - width / 2, y : yPos - height / 2, z : zPos - depth / 2},
+        p2 : {x : xPos + width / 2, y : yPos - height / 2, z : zPos - depth / 2},
+        p3 : {x : xPos + width / 2, y : yPos + height / 2, z : zPos - depth / 2},
+        p4 : {x : xPos - width / 2, y : yPos + height / 2, z : zPos - depth / 2},
+  
+          //Back points clockwise from top left
+        p5 : {x : xPos - width / 2, y : yPos - height / 2, z : zPos + depth / 2},
+        p6 : {x : xPos + width / 2, y : yPos - height / 2, z : zPos + depth / 2},
+        p7 : {x : xPos + width / 2, y : yPos + height / 2, z : zPos + depth / 2},
+        p8 : {x : xPos - width / 2, y : yPos + height / 2, z : zPos + depth / 2},
+      };
+      
+      //Send paramters to parent-calss (no .this)
+      super(xPos, yPos, zPos, points3D);
+
       //Positions and dimensions
       this.xPos = xPos;
       this.yPos = yPos;
       this.zPos = zPos;
       this.centerPoint = {x : this.xPos, y : this.yPos, z : this.zPos};
+
+
       this.width = width;
       this.height = height;
       this.depth = depth;
-    
+
+      //Get 3D points
+      this.points3D = this.points3D;
+      
       //Colors of each of the faces on the Box
       this.faceColor = {
         front  : [0, 0, 255],
@@ -20,20 +44,7 @@ class Box{
         bottom : [255, 0, 255],
       }
     
-      //Each initial point in 3D space (Depending on position and dimensions) 
-      this.points3D = {
-        //Front points clockwise from top left
-        p1 : {x : this.xPos - this.width / 2, y : this.yPos - this.height / 2, z : this.zPos - this.depth / 2},
-        p2 : {x : this.xPos + this.width / 2, y : this.yPos - this.height / 2, z : this.zPos - this.depth / 2},
-        p3 : {x : this.xPos + this.width / 2, y : this.yPos + this.height / 2, z : this.zPos - this.depth / 2},
-        p4 : {x : this.xPos - this.width / 2, y : this.yPos + this.height / 2, z : this.zPos - this.depth / 2},
-  
-        //Back points clockwise from top left
-        p5 : {x : this.xPos - this.width / 2, y : this.yPos - this.height / 2, z : this.zPos + this.depth / 2},
-        p6 : {x : this.xPos + this.width / 2, y : this.yPos - this.height / 2, z : this.zPos + this.depth / 2},
-        p7 : {x : this.xPos + this.width / 2, y : this.yPos + this.height / 2, z : this.zPos + this.depth / 2},
-        p8 : {x : this.xPos - this.width / 2, y : this.yPos + this.height / 2, z : this.zPos + this.depth / 2},
-      };
+     
     }
   
     draw()
@@ -171,21 +182,7 @@ class Box{
         }
       }
     }
-  
-    rotationX(angle = 5) //Rotate around x-axis
-    {
-      this.calculateRotation(angle, "z", "y", this.points3D, this.centerPoint);
-    }
-  
-    rotationY(angle = 5) //Rotate around y-axis
-    {
-      this.calculateRotation(angle, "x", "z", this.points3D, this.centerPoint);
-    }
-  
-    rotationZ(angle = 5) //Rotate around z-axis
-    {
-      this.calculateRotation(angle, "x", "y", this.points3D, this.centerPoint)
-    }
+
 
     localRotationX(angle)
     {
@@ -219,46 +216,5 @@ class Box{
       {
         this.faceColor[key] = rgbValue.slice();
       }
-    }
-
-
-    //Private functions:
-    calculateRotation(angleToRotate, hos = "x", mod = "y", pointsToRotate = this.points3D, rotateAroundReference = this.centerPoint, )
-    {
-      for(let key in pointsToRotate)
-      {
-        const point  = pointsToRotate[key];
-
-        //Find dist from object's centrum to point
-        const relativePointHos = point[hos] - rotateAroundReference[hos];
-        const relativePointMod = point[mod] - rotateAroundReference[mod];
-
-        //calculate current angle and new angle
-        const currentAngle = atan2(relativePointMod, relativePointHos);
-        const newAngle = currentAngle + angleToRotate;
-
-        //Calculate new points and un-relative points
-        const vectorLength = sqrt(relativePointHos * relativePointHos + relativePointMod * relativePointMod);
-        point[hos] = rotateAroundReference[hos] + cos(newAngle) * vectorLength;
-        point[mod] = rotateAroundReference[mod] + sin(newAngle) * vectorLength;
-      }
-    }
-
-    calculateLightIntensity(sunPosition, boxCornerOne, boxOppositeCorner, boxCenter)
-    {
-    //Average of 2 diagonals on one face = centerPointOfFace
-    const boxCenterFace = calculateAveragePoint(boxCornerOne, boxOppositeCorner);
-
-    //Calculate the vectors
-    const vecToSun = calculate3DVector(boxCenterFace, sunPosition);
-    const vecPerpendicularOnBoxSide = calculate3DVector(boxCenter, boxCenterFace);
-
-    //Remake to unitVectores, so that the distance to sun, doesnt matter
-    const unitVecToSun = calculate3DUnitVector(vecToSun);
-    const unitVecPerpendicularOnBoxSide = calculate3DUnitVector(vecPerpendicularOnBoxSide);
-
-    //Intensity between: -1 and 1
-    const sunIntensity = calculateDotProductOf3DVector(unitVecToSun, unitVecPerpendicularOnBoxSide);
-    return sunIntensity;
     }
   }
