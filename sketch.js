@@ -110,13 +110,11 @@ function draw()
 
 
   //Tetrahedron
-  let tri = new Tetrahedron(0, 0, 100, 20);
+  let tri = new Tetrahedron(-5, 0, 100, 20);
   tri.rotationX(currentAngleX);
   tri.rotationY(currentAngleY);
   tri.rotationZ(currentAngleZ);
   tri.draw();
-
-
 }
 
 
@@ -148,11 +146,46 @@ function drawTriangle(p1, p2, p3)
   triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 }
 
+
+function drawTriangleFromArrayWith3DPoints(arr)
+{
+  if(arr.length == 3)
+  {
+    const p1 = dotPlacementCalculator(arr[0].x, arr[0].y, arr[0].z);
+    const p2 = dotPlacementCalculator(arr[1].x, arr[1].y, arr[1].z);
+    const p3 = dotPlacementCalculator(arr[2].x, arr[2].y, arr[2].z);
+
+    triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+  } else {
+    console.log("Arr has invalid length to create triangle");
+  }
+}
+
 function calculateAveragePoint(p1, p2)
 {
   const pAvg = {x : (p1.x+p2.x)/2, y : (p1.y+p2.y)/2, z : (p1.z+p2.z)/2};
 
   return pAvg;
+}
+
+function calculateAveragePointFromPoints(arr)
+{
+  let avgPoints = {x: 0, y: 0, z: 0};
+  
+  for(let points of arr)
+  { 
+    // console.log(points);
+    avgPoints.x += points.x;
+    avgPoints.y += points.y;
+    avgPoints.z += points.z;
+  }
+
+  avgPoints.x /= arr.length;
+  avgPoints.y /= arr.length;
+  avgPoints.z /= arr.length;
+
+  // console.log(avgPoints);
+  return avgPoints;
 }
 
 function calculate3DVector(p1, p2)

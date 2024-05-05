@@ -9,7 +9,8 @@ class Object3D{
         this.points3D = points3D;
     }
 
-    rotationX(angle = 5)
+
+    rotationX(angle = 5) //Rotate around x-axis
     {
         this.calculateRotation(angle, "z", "y", this.points3D, this.centerPoint);
     }

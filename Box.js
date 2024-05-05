@@ -26,13 +26,9 @@ class Box extends Object3D
       this.zPos = zPos;
       this.centerPoint = {x : this.xPos, y : this.yPos, z : this.zPos};
 
-
       this.width = width;
       this.height = height;
       this.depth = depth;
-
-      //Get 3D points
-      this.points3D = this.points3D;
       
       //Colors of each of the faces on the Box
       this.faceColor = {
@@ -43,8 +39,6 @@ class Box extends Object3D
         top    : [0, 255, 255],
         bottom : [255, 0, 255],
       }
-    
-     
     }
   
     draw()
@@ -156,7 +150,7 @@ class Box extends Object3D
     {
       //Add offset to sun-position: from 2D to 3D kinda
       sunPosition = {x : (sunPosition.x - camOffset.x) / (abs(FOV) / sunPosition.z) , y : (sunPosition.y - camOffset.y) / (abs(FOV) / sunPosition.z), z : sunPosition.z};
-      console.log("Sun z-value: " + sunPosition.z  + "\nThis z-pos: " + this.zPos + "\n| Dim: " + `${this.height}, ${this.width}, ${this.depth}`);
+      // console.log("Sun z-value: " + sunPosition.z  + "\nThis z-pos: " + this.zPos + "\n| Dim: " + `${this.height}, ${this.width}, ${this.depth}`);
       
       //Draw circle as pointer to sun (Indication of sun placement)
       let circleSunPos = dotPlacementCalculator(sunPosition.x, sunPosition.y, sunPosition.z);

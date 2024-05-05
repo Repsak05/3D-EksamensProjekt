@@ -21,12 +21,24 @@ class Tetrahedron extends Object3D
 
         //Wdith, height, depth
         this.size = size;
-        
-        //Get 3D points
-        this.points3D = points3D;
+
+        //Face colors:
+        this.faceColor = {
+            front  : [0, 0, 255],
+            left   : [255, 0, 0],
+            right  : [0, 255, 0],
+            bottom : [255, 0, 255],
+        }
+
+
+        //Points each creating a side
+        this.facePoints = {
+            front: [this.points3D.p2, this.points3D.p1, this.points3D.p3],
+            left: [this.points3D.p2, this.points3D.p1, this.points3D.p4],
+            right: [this.points3D.p4, this.points3D.p1, this.points3D.p3],
+            bottom: [this.points3D.p2, this.points3D.p3, this.points3D.p4],
+        };
     }
-
-
 
     draw()
     {
@@ -37,13 +49,29 @@ class Tetrahedron extends Object3D
             p4 : dotPlacementCalculator(this.points3D.p4.x, this.points3D.p4.y, this.points3D.p4.z),
         }
 
-        fill(0, 255 ,0);
-        drawTriangle(this.points2D.p2, this.points2D.p3, this.points2D.p4); // Bottom
-        fill(255, 255 ,0);
-        drawTriangle(this.points2D.p2, this.points2D.p1, this.points2D.p4); //Back-left
-        fill(0, 255 ,255);
-        drawTriangle(this.points2D.p4, this.points2D.p1, this.points2D.p3); //Back-right
-        fill(255, 0 ,255);
-        drawTriangle(this.points2D.p2, this.points2D.p1, this.points2D.p3); //Front
+
+        //TODO: Following code should be inserted in the parent class: Object3D 
+        //Following bit of code will Render sides in order and give them color:
+        let arrWithSideAndZIndex = [];
+
+        for(let keys in this.facePoints)
+        {
+            //Get average point of the face
+            const faceCorners = this.facePoints[keys];
+            const averageFacePoint = calculateAveragePointFromPoints(faceCorners);
+
+            //Insert their face-name and their z-index
+            arrWithSideAndZIndex.push([keys, averageFacePoint.z]);
+        }
+
+        //Sort them by z-index
+        arrWithSideAndZIndex.sort((a, b) => b[1] - a[1]);
+
+        //Display each side in correct order.
+        for(let sideAndZIndex of arrWithSideAndZIndex)
+        {
+           fill(this.faceColor[sideAndZIndex[0]]);
+           drawTriangleFromArrayWith3DPoints(this.facePoints[sideAndZIndex[0]]);
+        }
     }
 }
