@@ -91,9 +91,8 @@ function draw()
   // box.rotationY(sliderAngleY.value() + 10);
   // box.rotationZ(sliderAngleZ.value() + 20);
   
-  box.draw();
   box.ajustLighting(mousePosition);
-  box.showSurface();
+  box.draw();
 
 
   //Create Draw box two
@@ -103,17 +102,17 @@ function draw()
   boxTwo.rotationZ(currentAngleX);
 
   boxTwo.setAllFacesColors([0, 255, 255]);
-  boxTwo.setFaceColor("front", [255, 255, 0]);
-  boxTwo.draw();
+  boxTwo.setFaceColor("front", [255, 255, 255]);
   boxTwo.ajustLighting(mousePosition);
-  boxTwo.showSurface();
+  boxTwo.draw();
 
 
   //Tetrahedron
   let tri = new Tetrahedron(-5, 0, 100, 20);
-  tri.rotationX(currentAngleX);
-  tri.rotationY(currentAngleY);
-  tri.rotationZ(currentAngleZ);
+  tri.rotationX(currentAngleZ);
+  tri.rotationY(currentAngleX);
+  tri.rotationZ(currentAngleY);
+  tri.ajustLighting(mousePosition);
   tri.draw();
 }
 
@@ -149,13 +148,28 @@ function drawTriangle(p1, p2, p3)
 
 function drawTriangleFromArrayWith3DPoints(arr)
 {
+  //Depending on however many points is given, make them into triangle(s)
   if(arr.length == 3)
   {
+    //Convert points to 2D
     const p1 = dotPlacementCalculator(arr[0].x, arr[0].y, arr[0].z);
     const p2 = dotPlacementCalculator(arr[1].x, arr[1].y, arr[1].z);
     const p3 = dotPlacementCalculator(arr[2].x, arr[2].y, arr[2].z);
 
+    //Draw triangle
     triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+
+  } else if (arr.length == 4){
+    //Convert points to 2D
+    const p1 = dotPlacementCalculator(arr[0].x, arr[0].y, arr[0].z);
+    const p2 = dotPlacementCalculator(arr[1].x, arr[1].y, arr[1].z);
+    const p3 = dotPlacementCalculator(arr[2].x, arr[2].y, arr[2].z);
+    const p4 = dotPlacementCalculator(arr[3].x, arr[3].y, arr[3].z);
+
+    //Draw triangles (2 to create a square)
+    triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+    triangle(p1.x, p1.y, p3.x, p3.y, p4.x, p4.y);
+
   } else {
     console.log("Arr has invalid length to create triangle");
   }
