@@ -1,4 +1,5 @@
-class Object3D{
+class Object3D
+{
   constructor(xPos, yPos, zPos, points3D, facePoints, faceColor,)
   {
       this.xPos = xPos;
@@ -73,7 +74,6 @@ class Object3D{
     }
   }
   
-
   setFaceColor(faceName, rgbValue)
   {
     if(this.faceColor[faceName])

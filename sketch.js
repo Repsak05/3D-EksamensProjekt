@@ -114,6 +114,21 @@ function draw()
   tri.rotationZ(currentAngleY);
   tri.ajustLighting(mousePosition);
   tri.draw();
+
+
+  let triTwo = new Tetrahedron(-5, 20, 100, 10);
+  triTwo.rotationX(currentAngleY);
+  triTwo.rotationY(currentAngleZ);
+  triTwo.rotationZ(currentAngleX);
+  triTwo.ajustLighting(mousePosition);
+  triTwo.draw();
+
+  let prism = new Prism(0, -20, 100, 20, 10);
+  prism.rotationX(currentAngleZ);
+  prism.rotationY(currentAngleX);
+  prism.rotationZ(-currentAngleY);
+  prism.ajustLighting(mousePosition);
+  prism.draw();
 }
 
 
@@ -144,7 +159,6 @@ function drawTriangle(p1, p2, p3)
 {
   triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 }
-
 
 function drawTriangleFromArrayWith3DPoints(arr)
 {
