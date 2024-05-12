@@ -84,16 +84,17 @@ function draw()
 
   //Create new box
   let box = new Box(sliderXPos.value() + 20, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
-  box.rotationX(currentAngleX);
-  box.rotationY(currentAngleY);
-  box.rotationZ(currentAngleZ);
-  // box.rotationX(sliderAngleX.value() + 40);
-  // box.rotationY(sliderAngleY.value() + 10);
-  // box.rotationZ(sliderAngleZ.value() + 20);
+  // box.rotationX(currentAngleX);
+  // box.rotationY(currentAngleY);
+  // box.rotationZ(currentAngleZ);
+  box.rotationX(sliderAngleX.value() + 0);
+  box.rotationY(sliderAngleY.value() + 0);
+  box.rotationZ(sliderAngleZ.value() + 0);
   
   box.ajustLighting(mousePosition);
+  
+  box.localRotationZ();
   box.draw();
-
 
   //Create Draw box two
   let boxTwo = new Box(-40, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value())
