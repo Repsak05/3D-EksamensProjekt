@@ -93,7 +93,7 @@ function draw()
   
   box.ajustLighting(mousePosition);
   
-  box.localRotationZ();
+  box.localRotationZ(mouseX);
   box.draw();
 
   //Create Draw box two
@@ -241,3 +241,11 @@ function calculate3DUnitVector(vec)
 
   return unitVector;
 }
+
+function calculate3DCrossProduct(vec1, vec2) {
+  const x = vec1.y * vec2.z - vec1.z * vec2.y;
+  const y = vec1.z * vec2.x - vec1.x * vec2.z;
+  const z = vec1.x * vec2.y - vec1.y * vec2.x;
+  return { x: x, y: y, z: z };
+}
+
