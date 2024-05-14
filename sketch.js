@@ -1,5 +1,5 @@
-const canvasX = 700;
-const canvasY = 700;
+const canvasX = 1000;
+const canvasY = 1000;
 
 const FOV = -800; //Distance from cam to actual Screen
 const camOffset = {x : 400, y: 400, z : FOV};
@@ -83,7 +83,8 @@ function draw()
 
 
   //Create new box
-  let box = new Box(sliderXPos.value() + 20, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
+  // let box = new Box(sliderXPos.value() + 20, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
+  let box = new Box(50,0,120, 40, 35, 30);
   // box.rotationX(currentAngleX);
   // box.rotationY(currentAngleY);
   // box.rotationZ(currentAngleZ);
@@ -95,6 +96,7 @@ function draw()
   
   box.localRotationZ(mouseX);
   box.draw();
+  box.drawExternCircles();
 
   //Create Draw box two
   let boxTwo = new Box(-40, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value())

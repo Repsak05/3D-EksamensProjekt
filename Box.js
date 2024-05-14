@@ -73,39 +73,40 @@ class Box extends Object3D
 
 
     //Round to show easier
-    this.xAxisLocal.x = round(this.xAxisLocal.x,2);
-    this.xAxisLocal.y = round(this.xAxisLocal.y,2);
-    this.xAxisLocal.z = round(this.xAxisLocal.z,2);
+    // this.xAxisLocal.x = round(this.xAxisLocal.x,2);
+    // this.xAxisLocal.y = round(this.xAxisLocal.y,2);
+    // this.xAxisLocal.z = round(this.xAxisLocal.z,2);
 
-    this.yAxisLocal.x = round(this.yAxisLocal.x,2);
-    this.yAxisLocal.y = round(this.yAxisLocal.y,2);
-    this.yAxisLocal.z = round(this.yAxisLocal.z,2);
+    // this.yAxisLocal.x = round(this.yAxisLocal.x,2);
+    // this.yAxisLocal.y = round(this.yAxisLocal.y,2);
+    // this.yAxisLocal.z = round(this.yAxisLocal.z,2);
 
-    this.zAxisLocal.x = round(this.zAxisLocal.x,2);
-    this.zAxisLocal.y = round(this.zAxisLocal.y,2);
-    this.zAxisLocal.z = round(this.zAxisLocal.z,2);
+    // this.zAxisLocal.x = round(this.zAxisLocal.x,2);
+    // this.zAxisLocal.y = round(this.zAxisLocal.y,2);
+    // this.zAxisLocal.z = round(this.zAxisLocal.z,2);
 
-    // Log results for debugging
-    console.log("X: ", this.xAxisLocal);
-    console.log("Y: ", this.yAxisLocal);
-    console.log("Z: ", this.zAxisLocal);
-    console.log("------------------");
-    console.log(calculate3DVectorLength(this.xAxisLocal))
-    console.log(calculate3DVectorLength(this.yAxisLocal))
-    console.log(calculate3DVectorLength(this.zAxisLocal))
+    // //debugging
+    // console.log("X: ", this.xAxisLocal);
+    // console.log("Y: ", this.yAxisLocal);
+    // console.log("Z: ", this.zAxisLocal);
+    // console.log("------------------");
+    // console.log(calculate3DVectorLength(this.xAxisLocal))
+    // console.log(calculate3DVectorLength(this.yAxisLocal))
+    // console.log(calculate3DVectorLength(this.zAxisLocal))
 
-    console.log("Should be 0?");
-    console.log(calculateDotProductOf3DVector(this.xAxisLocal, this.yAxisLocal));
-    console.log(calculateDotProductOf3DVector(this.xAxisLocal, this.zAxisLocal));
-    console.log(calculateDotProductOf3DVector(this.yAxisLocal, this.zAxisLocal));
+    // console.log("Should be 0?");
+    // console.log(calculateDotProductOf3DVector(this.xAxisLocal, this.yAxisLocal));
+    // console.log(calculateDotProductOf3DVector(this.xAxisLocal, this.zAxisLocal));
+    // console.log(calculateDotProductOf3DVector(this.yAxisLocal, this.zAxisLocal));
 
       
       // ? 2. Calculate x-axis intersection with x-plane:
         // ! Do for all points:
 
-    const testPoints = ["p1", "p5"];
+    const testPoints = ["p1", "p4"];
     for(let points of testPoints)
     {
+      console.log(points);
       const point = this.points3D[points]; // == t
 
       //Find center of the face:
@@ -117,44 +118,52 @@ class Box extends Object3D
         /(this.zAxisLocal.x * this.zAxisLocal.x + this.zAxisLocal.y * this.zAxisLocal.y + this.zAxisLocal.z * this.zAxisLocal.z)
       
         //Actual Face Average Point:
-      let avgFacePoint = {
+      const avgFacePoint = {
         x : this.xPos + n * this.zAxisLocal.x, 
         y : this.yPos + n * this.zAxisLocal.y, 
         z : this.zPos + n * this.zAxisLocal.z
       };
 
+      this.avgFacePoint = avgFacePoint; //___remove this later
+
       //Find point to create rightAngled triangle
-      const n2 = 
-        ( - this.xAxisLocal.x * (point.x - avgFacePoint.x)
-        - this.xAxisLocal.y * (point.y - avgFacePoint.y)
-        - this.xAxisLocal.z * (point.z - avgFacePoint.z))
-        /(this.xAxisLocal.x * this.xAxisLocal.x + this.xAxisLocal.y * this.xAxisLocal.y + this.xAxisLocal.z * this.xAxisLocal.z)
+      const n2 =  //yAxisLocal SHOULD NOT BE USED: IT SHOULD BE xAxisLocal (THOUGH ITS DIR IR CURRENTLY WRONG)
+        ( - this.yAxisLocal.x * (point.x - avgFacePoint.x)
+        - this.yAxisLocal.y * (point.y - avgFacePoint.y)
+        - this.yAxisLocal.z * (point.z - avgFacePoint.z))
+        /(this.yAxisLocal.x * this.yAxisLocal.x + this.yAxisLocal.y * this.yAxisLocal.y + this.yAxisLocal.z * this.yAxisLocal.z)
 
 
       let rightAngledPoint = {
-        x : point.x + n2 * this.xAxisLocal.x,
-        y : point.y + n2 * this.xAxisLocal.y,
-        z : point.z + n2 * this.xAxisLocal.z,
+        x : point.x + n2 * this.yAxisLocal.x,
+        y : point.y + n2 * this.yAxisLocal.y,
+        z : point.z + n2 * this.yAxisLocal.z,
       };
 
+      this.rightAngledPoint = rightAngledPoint //remove this later
+
+      
 
       const relP1 = { //Point B in notes
         x : point.x - this.xPos,
         y : point.y - this.yPos,
         z : point.z - this.zPos,
       }
-
+      
       const relAnglePoint = { //Point A in notes
         x : rightAngledPoint.x - this.xPos,
         y :  rightAngledPoint.y - this.yPos,
         z : rightAngledPoint.z - this.zPos,
       }
-
+      
       const relAvgPoint = { //Point C in notes
         x : avgFacePoint.x - this.xPos,
         y : avgFacePoint.y - this.yPos,
         z : avgFacePoint.z - this.zPos,
       }
+      
+      
+      fill(0);
       console.log(
         "------------------\n Point : ", 
         relP1,  
@@ -163,10 +172,10 @@ class Box extends Object3D
         "\nAvg : ",
         relAvgPoint,
         " \n---------------")
-      // ? 3. Calculate current angle
-      
-      let vecCA = {
-        x : relAnglePoint.x - relAvgPoint.x,
+        // ? 3. Calculate current angle
+        
+        let vecCA = {
+          x : relAnglePoint.x - relAvgPoint.x,
         y : relAnglePoint.y - relAvgPoint.y,
         z : relAnglePoint.z - relAvgPoint.z,
       }
@@ -175,24 +184,67 @@ class Box extends Object3D
         y : relP1.y - relAvgPoint.y,
         z : relP1.z - relAvgPoint.z,
       }
-
+      
       let currentAngle = acos(calculateDotProductOf3DVector(vecCA, vecCB)/(calculate3DVectorLength(vecCA) * calculate3DVectorLength(vecCB)));
       let newAngle = currentAngle + angle;
 
+      console.log("X axis: " , this.xAxisLocal);
+      console.log("Y axis: " , this.yAxisLocal);
+      console.log("Z axis: " , this.zAxisLocal);
+      
+      
       console.log(currentAngle);
-
+      console.log("n : " + n);
+      console.log("n2 : " + n2);
+      
       // ? 4. Calculate new points position
 
-
+      console.log("Old " + points + ": ", point);
+      //Do something different depending on N3 (angle to D point - similar to A point) (Because currently is top  and bottom equal)
+      if(n2 > 0){
+        point.x = relAvgPoint.x + cos(newAngle) * calculate3DVectorLength(vecCB) + this.xPos;
+        point.y = relAvgPoint.y + sin(newAngle) * calculate3DVectorLength(vecCB) + this.yPos;
+        // point.z = relAvgPoint.z + tan(newAngle) * calculate3DVectorLength(vecCB) + this.zPos;
+      } else if(n2 < 0) {
+        point.x = -(relAvgPoint.x + cos(newAngle) * calculate3DVectorLength(vecCB)) + this.xPos;
+        point.y = -(relAvgPoint.y + sin(newAngle) * calculate3DVectorLength(vecCB)) + this.yPos;
+        // point.z = -(relAvgPoint.z + tan(newAngle) * calculate3DVectorLength(vecCB)) + this.zPos;
+      }
+      
+      console.log("New " + points + ": ", point);
+      
+      let pos = dotPlacementCalculator(point.x, point.y, point.z);
+      let posCenter = dotPlacementCalculator(this.xPos, this.yPos, this.zPos);
+      circle(posCenter.x, posCenter.y, 30);
+      circle(pos.x, pos.y, 10);
+        
+        
+        
     }
-        //Calculate plane
-          //Vec : this.xAxisLocal (maybe not this)
-          //Point : frontFaceAveragePoint
-        //Intersection
-          //p1 : faceFront[pointNum]
-          //p1 * n = intersection (isolate n)
+    //Calculate plane
+    //Vec : this.xAxisLocal (maybe not this)
+    //Point : frontFaceAveragePoint
+    //Intersection
+    //p1 : faceFront[pointNum]
+    //p1 * n = intersection (isolate n)
+  
+  }
+  drawExternCircles()
+  {
+    fill(0);
+    const centerPos = dotPlacementCalculator(this.xPos, this.yPos, this.zPos);
+    circle(centerPos.x, centerPos.y, 10);
 
-
+    fill(255,0, 255);
+    const avgFacePos = dotPlacementCalculator(this.avgFacePoint.x, this.avgFacePoint.y, this.avgFacePoint.z);
+    console.log("avgFacePos", avgFacePos);
+    circle(avgFacePos.x, avgFacePos.y, 30);
+    
+    fill(255, 255, 0);
+    const theAnglePoint = dotPlacementCalculator(this.rightAngledPoint.x, this.rightAngledPoint.y, this.rightAngledPoint.z);
+    console.log("theAnglePoint", theAnglePoint);
+    circle(theAnglePoint.x, theAnglePoint.y, 30);
+    
   }
 
 }
