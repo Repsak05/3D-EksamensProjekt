@@ -55,6 +55,7 @@ class Object3D
     this.calculateRotation(angle, "x", "y", this.points3D, this.centerPoint)
   }
 
+
   localRotationX(angle = 5)
   {
     //Preforms a rotation of the objcts local axis

@@ -96,7 +96,6 @@ function draw()
   
   box.localRotationZ(mouseX);
   box.draw();
-  box.drawExternCircles();
 
   //Create Draw box two
   let boxTwo = new Box(-40, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value())
@@ -132,6 +131,7 @@ function draw()
   prism.rotationZ(-currentAngleY);
   prism.ajustLighting(mousePosition);
   prism.draw();
+
 }
 
 
