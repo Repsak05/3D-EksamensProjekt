@@ -84,7 +84,7 @@ function draw()
 
   //Create new box
   // let box = new Box(sliderXPos.value() + 20, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
-  let box = new Box(50,0,120, 40, 35, 30);
+  let box = new Box(25,0,200, 40, 35, 30);
   // box.rotationX(currentAngleX);
   // box.rotationY(currentAngleY);
   // box.rotationZ(currentAngleZ);
@@ -94,7 +94,9 @@ function draw()
   
   box.ajustLighting(mousePosition);
   
-  box.localRotationZ(mouseX);
+  // box.localRotationZ(currentAngleZ);
+  // box.localRotationY(currentAngleY);
+  // box.localRotationX(currentAngleY);
   box.draw();
 
   //Create Draw box two
