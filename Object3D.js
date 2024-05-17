@@ -55,22 +55,6 @@ class Object3D
     this.calculateRotation(angle, "x", "y", this.points3D, this.centerPoint)
   }
 
-
-  localRotationX(angle = 5)
-  {
-    //Preforms a rotation of the objcts local axis
-  }
-
-  localRotationY(angle = 5)
-  {
-    //Preforms a rotation of the objcts local axis
-  }
-  
-  localRotationZ(angle = 5)
-  {
-    //Preforms a rotation of the objcts local axis
-  }
-
   ajustLighting(sunPosition)
   {
     //Get suns 3D position

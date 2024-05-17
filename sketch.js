@@ -56,13 +56,13 @@ function setup()
   sliderDepth.position(140,50);
 
   //Sliders angels;
-  sliderAngleX = createSlider(0,1080, 0);
+  sliderAngleX = createSlider(0, 360, 0);
   sliderAngleX.position(270,10);
 
-  sliderAngleY = createSlider(0,1080, 0);
+  sliderAngleY = createSlider(0, 360, 0);
   sliderAngleY.position(270,30);
 
-  sliderAngleZ = createSlider(0,1080, 0);
+  sliderAngleZ = createSlider(0, 360, 0);
   sliderAngleZ.position(270,50);
 
   //Sun-Z
@@ -88,15 +88,16 @@ function draw()
   // box.rotationX(currentAngleX);
   // box.rotationY(currentAngleY);
   // box.rotationZ(currentAngleZ);
-  box.rotationX(sliderAngleX.value() + 0);
-  box.rotationY(sliderAngleY.value() + 0);
-  box.rotationZ(sliderAngleZ.value() + 0);
+  // box.rotationX(sliderAngleX.value() + 0);
+  // box.rotationY(sliderAngleY.value() + 0);
+  // box.rotationZ(sliderAngleZ.value() + 0);
   
+  
+  box.localRotationX(sliderAngleX.value() || 10);
+  box.localRotationY(sliderAngleY.value() || 10);
+  box.localRotationZ(sliderAngleZ.value() || 10);
+  box.showLocalAxes();
   box.ajustLighting(mousePosition);
-  
-  // box.localRotationZ(currentAngleZ);
-  // box.localRotationY(currentAngleY);
-  // box.localRotationX(currentAngleY);
   box.draw();
 
   //Create Draw box two

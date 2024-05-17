@@ -41,35 +41,49 @@ class Box extends Object3D
     super(xPos, yPos, zPos, points3D, facePoints, faceColor);
   }
 
+  //Public functions
   localRotationX(angle)
   {
     this.updateLocalAxes();
     this.localRotationAroundAxis(angle, this.xAxisLocal);
   }
+
   localRotationY(angle)
   {
     this.updateLocalAxes();
     this.localRotationAroundAxis(angle, this.yAxisLocal);
   }
+  
   localRotationZ(angle)
   {
     this.updateLocalAxes();
     this.localRotationAroundAxis(angle, this.zAxisLocal);
   }
 
+  showLocalAxes()
+  {
+    this.updateLocalAxes();
+    let axes = [this.xAxisLocal, this.yAxisLocal, this.zAxisLocal];
+
+    for(let objectsAxes of axes)
+    {
+      strokeWeight(10);
+      const lineLen = 400;
+      let lp1 = dotPlacementCalculator(this.xPos - lineLen/2 * objectsAxes.x, this.yPos - lineLen/2 * objectsAxes.y, this.zPos - lineLen/2 * objectsAxes.z)
+      let lp2 = dotPlacementCalculator(this.xPos + lineLen/2 * objectsAxes.x, this.yPos + lineLen/2 * objectsAxes.y, this.zPos + lineLen/2 * objectsAxes.z)
+      line(lp1.x, lp1.y, lp2.x, lp2.y);
+    }
+
+    strokeWeight(1);
+  }
+
+
+  //Private functions
   localRotationAroundAxis(angle = 5, rotationalAxis = this.zAxisLocal)
   {
     // ! Preforms a rotation of the objcts local axis
-    //Draw the axis as a refrence
-    strokeWeight(10);
-    const lineLen = 400;
-    let lp1 = dotPlacementCalculator(this.xPos - lineLen/2 * rotationalAxis.x, this.yPos - lineLen/2 * rotationalAxis.y, this.zPos - lineLen/2 * rotationalAxis.z)
-    let lp2 = dotPlacementCalculator(this.xPos + lineLen/2 * rotationalAxis.x, this.yPos + lineLen/2 * rotationalAxis.y, this.zPos + lineLen/2 * rotationalAxis.z)
-    line(lp1.x, lp1.y, lp2.x, lp2.y);
-    strokeWeight(1);
 
-      
-      // ? 2. Preform rotation for all given points
+    //1. Preform rotation for all given points
     for(let points in this.points3D)
     {
       const point = this.points3D[points];
@@ -80,8 +94,7 @@ class Box extends Object3D
         z : point.z - this.zPos,
       }
             
-      // ? 4. Rotate vector relative to z-axis
-
+      //2. Rotate vector relative to z-axis
       let newVec = {
         x : vecToRotateAroundAxis.x * cos(angle) + (calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).x) * sin(angle) + rotationalAxis.x * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
         y : vecToRotateAroundAxis.y * cos(angle) + (calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).y) * sin(angle) + rotationalAxis.y * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
@@ -97,29 +110,15 @@ class Box extends Object3D
 
   updateLocalAxes()
   {
-    //! Some problems with calculation of the axes
-    const frontFaceAveragePoint = calculateAveragePointFromPoints(this.facePoints["front"] || Object.values(this.facePoints)[0]);
-    this.zAxisLocal = calculate3DUnitVector(calculate3DVector(this.centerPoint, frontFaceAveragePoint));
-
-     // Calculate 2 angle between local z-axis and global z-axis
-     let angleOne = acos(Math.abs(this.zAxisLocal.z  / 1)); //Changes: z, x
-     let angleTwo = atan2(this.zAxisLocal.y, this.zAxisLocal.x); //Changes: y, x
- 
-     // Rotate the global x-axis by angles to get local x-axis
-     let newX = cos(angleTwo) * 1;
-     let newY = sin(angleTwo) * 1;
-     let newZ = 0; 
- 
-     // Rotate local x-axis by angleOne around the y-axis
-     let newXRotated = newX * cos(angleOne);
-     let newYRotated = newY;
-     let newZRotated = newX * sin(angleOne);
- 
-     //Axis Unit vector 
-     this.yAxisLocal = calculate3DUnitVector({x: newXRotated, y: newYRotated, z: newZRotated});
- 
-     //Create local y-axis
-     this.xAxisLocal = calculate3DUnitVector(calculate3DCrossProduct(this.yAxisLocal, this.zAxisLocal)); 
+    //Following works, though only with boxes :(
+    const xFacePoint = calculateAveragePointFromPoints(this.facePoints["right"]);
+    this.xAxisLocal = calculate3DUnitVector(calculate3DVector(this.centerPoint, xFacePoint));
+    
+    const yFacePoint = calculateAveragePointFromPoints(this.facePoints["top"])
+    this.yAxisLocal = calculate3DUnitVector(calculate3DVector(this.centerPoint, yFacePoint));
+    
+    const zFacePoint = calculateAveragePointFromPoints(this.facePoints["front"]);
+    this.zAxisLocal = calculate3DUnitVector(calculate3DVector(this.centerPoint, zFacePoint));    
   }
 }
 
