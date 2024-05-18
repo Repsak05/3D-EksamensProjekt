@@ -1,8 +1,9 @@
 const canvasX = 1000;
 const canvasY = 1000;
 
-const FOV = -800; //Distance from cam to actual Screen
-const camOffset = {x : 400, y: 400, z : FOV};
+let FOV = -800; //Distance from cam to actual Screen
+let camOffset = {x : 400, y: 400, z : FOV};
+const moveSpeed = 5;
 
 const rotSpeedX = .5;
 const rotSpeedY = .7;
@@ -68,7 +69,6 @@ function setup()
   //Sun-Z
   sliderSunZ = createSlider(-100, 150, 10);
   sliderSunZ.position(10,100);
-
 }
 
 function draw()
@@ -135,8 +135,34 @@ function draw()
   prism.ajustLighting(mousePosition);
   prism.draw();
 
-}
+  if(keyCode == 87) //w
+  {
+    FOV -= moveSpeed;
+  } 
+  if(keyCode == 65) //a
+  {
+    camOffset.x += moveSpeed;
+    
+  }
+  if(keyCode == 83) //s
+  {
+    FOV += moveSpeed;
+    
+  }
+  if(keyCode == 68) //d
+  {
+    camOffset.x -= moveSpeed;
+  }
+  if(keyCode == 16) //Shift
+  {
+    camOffset.y -= moveSpeed;
+  }
+  if(keyCode == 32) //Shift
+  {
+    camOffset.y += moveSpeed;
+  }
 
+}
 
 function drawRectFromPoints(p1, p2, p3, p4)
 {
