@@ -16,7 +16,6 @@ class Object3D
   draw()
   {
     //Draw box rects in correct order
-
     let arrWithSideAndZIndex = [];
 
     for(let keys in this.facePoints)

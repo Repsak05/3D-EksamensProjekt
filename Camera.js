@@ -36,4 +36,11 @@ class Camera{
 
         keyPressed();
     }
+
+    renderObjectsInOrder()
+    {
+
+    }
+
+    
 }
