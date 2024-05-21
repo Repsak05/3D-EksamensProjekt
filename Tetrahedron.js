@@ -3,6 +3,7 @@ class Tetrahedron extends Object3D
     constructor(xPos, yPos, zPos, size)
     {
         //Create 3D points to give to constructor
+        
         const points3D = {
             p1: {x: xPos,               y: yPos - Math.sqrt(2/3) * size / 3,    z: zPos + Math.sqrt(2/3) * size / 3},  // Top 
             p2: {x: xPos - size / 2,    y: yPos + Math.sqrt(2/3) * size / 6,    z: zPos - Math.sqrt(2/3) * size / 3},  // Front-left 
@@ -20,13 +21,14 @@ class Tetrahedron extends Object3D
         
         //Face colors:
         const faceColor = {
-            front  : [0, 0, 255],
-            left   : [255, 0, 0],
-            right  : [0, 255, 0],
-            bottom : [255, 0, 255],
+            front  : [random(0, 255), random(0, 255), random(0, 255)],
+            left   : [random(0, 255), random(0, 255), random(0, 255)],
+            right  : [random(0, 255), random(0, 255), random(0, 255)],
+            bottom : [random(0, 255), random(0, 255), random(0, 255)],
         }
 
         //Send parameters to parent-class (no .this)
-        super(xPos, yPos, zPos, points3D, facePoints, faceColor);
+        super(xPos, yPos, zPos, points3D, facePoints, faceColor, "Tetrahedron");
+
     }
 }

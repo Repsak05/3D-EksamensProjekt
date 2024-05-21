@@ -1,7 +1,10 @@
 class Object3D
 {
-  constructor(xPos, yPos, zPos, points3D, facePoints, faceColor,)
+  constructor(xPos, yPos, zPos, points3D, facePoints, faceColor, type)
   {
+      this.type = type //Public
+
+      //Private
       this.xPos = xPos;
       this.yPos = yPos;
       this.zPos = zPos;
@@ -9,8 +12,17 @@ class Object3D
 
       this.points3D = points3D;
       this.facePoints = facePoints;
-      this.faceColor = faceColor;
+      this.faceColor = faceColor; //Starting colors
+
+
+      //Create copy of faceColor (These are the current shown colors)
+      this.faceCurrentColor = {};
+      for (let face in this.faceColor) 
+      {
+        this.faceCurrentColor[face] = [...this.faceColor[face]];
+      }
   }
+
 
   //Public functions
   draw()
@@ -34,7 +46,7 @@ class Object3D
     //Display each side in correct order.
     for(let sideAndZIndex of arrWithSideAndZIndex)
     {
-        fill(this.faceColor[sideAndZIndex[0]]);
+        fill(this.faceCurrentColor[sideAndZIndex[0]]);
         drawTriangleFromArrayWith3DPoints(this.facePoints[sideAndZIndex[0]]);
     }
   }
@@ -68,9 +80,12 @@ class Object3D
     {
       for(let i = 0; i < this.faceColor[face].length; i++)
       {
-        this.faceColor[face][i] *= (this.calculateLightIntensity(sunPosition, this.centerPoint, face) + 1) / 2; // (..+1)/2 because before, the inteval was from -1 to 1 | Now 0 to 1
+        this.faceCurrentColor[face][i] = this.faceColor[face][i] * (this.calculateLightIntensity(sunPosition, this.centerPoint, face) + 1) / 2; // (..+1)/2 because before, the inteval was from -1 to 1 | Now 0 to 1
       }
     }
+
+    console.log(this.faceCurrentColor);
+    console.log(this.faceColor);
   }
   
   setFaceColor(faceName, rgbValue)

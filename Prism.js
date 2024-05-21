@@ -2,6 +2,7 @@ class Prism extends Object3D
 {
     constructor(xPos, yPos, zPos, height, width, depth = width)
     {
+        
         const points3D = {
             //Top middle; clickwise
             p1 : { x: xPos,             y: yPos + height / 2, z: zPos + depth / 2 },
@@ -23,13 +24,13 @@ class Prism extends Object3D
         };
         
         const faceColor = {
-            top     : [0, 255, 0],
-            bottom  : [255, 255, 0],
-            right   : [255, 0, 255],
-            left    : [120, 30, 255],
-            front   : [0, 120, 255],
+            top     : [random(0, 255), random(0, 255), random(0, 255)],
+            bottom  : [random(0, 255), random(0, 255), random(0, 255)],
+            right   : [random(0, 255), random(0, 255), random(0, 255)],
+            left    : [random(0, 255), random(0, 255), random(0, 255)],
+            front   : [random(0, 255), random(0, 255), random(0, 255)],
         };
-
-        super(xPos, yPos, zPos, points3D, facePoints, faceColor);
+        
+        super(xPos, yPos, zPos, points3D, facePoints, faceColor, "Prism");
     }
 }

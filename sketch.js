@@ -5,6 +5,8 @@ let FOV = -800; //Distance from cam to actual Screen
 let camOffset = {x : 400, y: 400, z : FOV};
 const moveSpeed = 5;
 
+let objects = [];
+
 const rotSpeedX = .5;
 const rotSpeedY = .7;
 const rotSpeedZ = .11;
@@ -67,14 +69,30 @@ function setup()
   sliderAngleZ.position(270,50);
 
   //Sun-Z
-  sliderSunZ = createSlider(-100, 150, 10);
+  sliderSunZ = createSlider(-100, 200, 10);
   sliderSunZ.position(10,100);
+
+
+  for(let x = -80; x < 120; x+=30)
+  {
+    for(let y = -80; y < 120; y+=40)
+    {
+      if(x < 0)
+      {
+
+        objects.push(new Box(x, y, 200, 20, 20, 20));
+      } else {
+        
+        objects.push(new Tetrahedron(x,y,200, 30));
+      }
+    }
+  }
+
 }
 
 function draw()
 {
   background(220);
-
   currentAngleX += rotSpeedX;
   currentAngleY += rotSpeedY;
   currentAngleZ += rotSpeedZ;
@@ -82,102 +100,84 @@ function draw()
   let mousePosition = {x : mouseX, y : mouseY, z : 40 + sliderSunZ.value()}
 
 
+  for(let object of objects)
+  {
+    if(object.type == "Box")
+    {
+      object.localRotationX(random(0.5, 2.5));
+      object.localRotationY(random(0.5, 2.5));
+      object.localRotationZ(random(0.5, 2.5));
+    }else {
+      object.rotationX(random(0.5, 2.5));
+      object.rotationY(random(0.5, 2.5));
+      object.rotationZ(random(0.5, 2.5));
+    }
+    
+    object.ajustLighting(mousePosition);
+    object.draw();
+  }
+
+
+
+
   //Create new box
   // let box = new Box(sliderXPos.value() + 20, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value());
-  let box = new Box(25,0,200, 40, 35, 30);
-  // box.rotationX(currentAngleX);
-  // box.rotationY(currentAngleY);
-  // box.rotationZ(currentAngleZ);
-  // box.rotationX(sliderAngleX.value() + 0);
-  // box.rotationY(sliderAngleY.value() + 0);
-  // box.rotationZ(sliderAngleZ.value() + 0);
+  // let box = new Box(25,0,200, 40, 35, 30);
+  // box.localRotationX(currentAngleX);
+  // box.localRotationY(currentAngleY);
+  // box.localRotationZ(currentAngleZ);
+  // // box.rotationX(sliderAngleX.value() + 0);
+  // // box.rotationY(sliderAngleY.value() + 0);
+  // // box.rotationZ(sliderAngleZ.value() + 0);
   
   
-  box.localRotationX(sliderAngleX.value() || 10);
-  box.localRotationY(sliderAngleY.value() || 10);
-  box.localRotationZ(sliderAngleZ.value() || 10);
-  box.showLocalAxes();
-  box.ajustLighting(mousePosition);
-  box.draw();
+  // // box.localRotationX(sliderAngleX.value() || 10);
+  // // box.localRotationY(sliderAngleY.value() || 10);
+  // // box.localRotationZ(sliderAngleZ.value() || 10);
+  // box.showLocalAxes();
+  // box.ajustLighting(mousePosition);
+  // box.draw();
 
-  //Create Draw box two
-  let boxTwo = new Box(-40, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value())
-  boxTwo.rotationX(currentAngleY);
-  boxTwo.rotationY(currentAngleZ);
-  boxTwo.rotationZ(currentAngleX);
+  // //Create Draw box two
+  // let boxTwo = new Box(-40, sliderYPos.value(), sliderZPos.value(), sliderWidth.value(), sliderHeight.value(), sliderDepth.value())
+  // boxTwo.rotationX(currentAngleY);
+  // boxTwo.rotationY(currentAngleZ);
+  // boxTwo.rotationZ(currentAngleX);
 
-  boxTwo.setAllFacesColors([0, 255, 255]);
-  boxTwo.setFaceColor("front", [255, 255, 255]);
-  boxTwo.ajustLighting(mousePosition);
-  boxTwo.draw();
-
-
-  //Tetrahedron
-  let tri = new Tetrahedron(-5, 0, 100, 20);
-  tri.rotationX(currentAngleZ);
-  tri.rotationY(currentAngleX);
-  tri.rotationZ(currentAngleY);
-  tri.ajustLighting(mousePosition);
-  tri.draw();
+  // boxTwo.setAllFacesColors([0, 255, 255]);
+  // boxTwo.setFaceColor("front", [255, 255, 255]);
+  // boxTwo.ajustLighting(mousePosition);
+  // boxTwo.draw();
 
 
-  let triTwo = new Tetrahedron(-5, 20, 100, 10);
-  triTwo.rotationX(currentAngleY);
-  triTwo.rotationY(currentAngleZ);
-  triTwo.rotationZ(currentAngleX);
-  triTwo.ajustLighting(mousePosition);
-  triTwo.draw();
+  // //Tetrahedron
+  // let tri = new Tetrahedron(-5, 0, 100, 20);
+  // tri.rotationX(currentAngleZ);
+  // tri.rotationY(currentAngleX);
+  // tri.rotationZ(currentAngleY);
+  // tri.ajustLighting(mousePosition);
+  // tri.draw();
 
-  let prism = new Prism(0, -20, 100, 20, 10);
-  prism.rotationX(currentAngleZ);
-  prism.rotationY(currentAngleX);
-  prism.rotationZ(-currentAngleY);
-  prism.ajustLighting(mousePosition);
-  prism.draw();
 
-  if(keyCode == 87) //w
-  {
-    FOV -= moveSpeed;
-  } 
-  if(keyCode == 65) //a
-  {
-    camOffset.x += moveSpeed;
-    
-  }
-  if(keyCode == 83) //s
-  {
-    FOV += moveSpeed;
-    
-  }
-  if(keyCode == 68) //d
-  {
-    camOffset.x -= moveSpeed;
-  }
-  if(keyCode == 16) //Shift
-  {
-    camOffset.y -= moveSpeed;
-  }
-  if(keyCode == 32) //Shift
-  {
-    camOffset.y += moveSpeed;
-  }
+  // let triTwo = new Tetrahedron(-5, 20, 100, 10);
+  // triTwo.rotationX(currentAngleY);
+  // triTwo.rotationY(currentAngleZ);
+  // triTwo.rotationZ(currentAngleX);
+  // triTwo.ajustLighting(mousePosition);
+  // triTwo.draw();
 
+  // let prism = new Prism(0, -20, 100, 20, 10);
+  // prism.rotationX(currentAngleZ);
+  // prism.rotationY(2*currentAngleX);
+  // prism.rotationZ(-currentAngleY);
+  // prism.ajustLighting(mousePosition);
+  // prism.draw();
+
+ 
+  movecam();
 }
 
-function drawRectFromPoints(p1, p2, p3, p4)
-{
-  //Might want to use planes instead of lines
-  line(p1.x, p1.y, p2.x, p2.y);
-  line(p2.x, p2.y, p3.x, p3.y);
-  line(p3.x, p3.y, p4.x, p4.y);
-  line(p4.x, p4.y, p1.x, p1.y);
-
-  circle(p1.x,p1.y, 10);
-  circle(p2.x,p2.y, 10);
-  circle(p3.x,p3.y, 10);
-  circle(p4.x,p4.y, 10);
-}
-
+//Math funcitons
 function dotPlacementCalculator(x, y, z)
 {
   //Make a 3D point apear in 2D space
@@ -185,11 +185,6 @@ function dotPlacementCalculator(x, y, z)
   let y2D = (y * abs(FOV)) / z + camOffset.y;
 
   return {x : x2D, y : y2D};
-}
-
-function drawTriangle(p1, p2, p3)
-{
-  triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 }
 
 function drawTriangleFromArrayWith3DPoints(arr)
@@ -221,20 +216,12 @@ function drawTriangleFromArrayWith3DPoints(arr)
   }
 }
 
-function calculateAveragePoint(p1, p2)
-{
-  const pAvg = {x : (p1.x+p2.x)/2, y : (p1.y+p2.y)/2, z : (p1.z+p2.z)/2};
-
-  return pAvg;
-}
-
 function calculateAveragePointFromPoints(arr)
 {
   let avgPoints = {x: 0, y: 0, z: 0};
   
   for(let points of arr)
   { 
-    // console.log(points);
     avgPoints.x += points.x;
     avgPoints.y += points.y;
     avgPoints.z += points.z;
@@ -244,7 +231,6 @@ function calculateAveragePointFromPoints(arr)
   avgPoints.y /= arr.length;
   avgPoints.z /= arr.length;
 
-  // console.log(avgPoints);
   return avgPoints;
 }
 
@@ -280,3 +266,35 @@ function calculate3DCrossProduct(vec1, vec2) {
   return { x: x, y: y, z: z };
 }
 
+
+//Other functions
+function movecam()
+{
+  if(keyCode == 87) //w
+  {
+    FOV -= moveSpeed;
+  } 
+  if(keyCode == 65) //a
+  {
+    camOffset.x += moveSpeed;
+    
+  }
+  if(keyCode == 83) //s
+  {
+    FOV += moveSpeed;
+    
+  }
+  if(keyCode == 68) //d
+  {
+    camOffset.x -= moveSpeed;
+  }
+  if(keyCode == 16) //Shift
+  {
+    camOffset.y -= moveSpeed;
+  }
+  if(keyCode == 32) //Shift
+  {
+    camOffset.y += moveSpeed;
+  }
+
+}
