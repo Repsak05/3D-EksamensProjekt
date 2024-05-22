@@ -37,7 +37,7 @@ class Camera{
         keyPressed();
     }
 
-    renderObjectsInOrder()
+    renderObjectsInOrder(objects)
     {
 
     }

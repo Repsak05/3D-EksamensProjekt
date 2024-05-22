@@ -73,17 +73,20 @@ function setup()
   sliderSunZ.position(10,100);
 
 
-  for(let x = -80; x < 120; x+=30)
+  //Intialize objects
+  for(let x = -80; x < 120; x += 30)
   {
-    for(let y = -80; y < 120; y+=40)
+    for(let y = -80; y < 120; y += 40)
     {
-      if(x < 0)
+      if(x < -20)
       {
-
         objects.push(new Box(x, y, 200, 20, 20, 20));
+
+      } else if (x < 20){ 
+        objects.push(new Tetrahedron(x, y, 200, 30));
+
       } else {
-        
-        objects.push(new Tetrahedron(x,y,200, 30));
+        objects.push(new Prism(x, y, 200, 20, 20, 20));
       }
     }
   }
@@ -97,9 +100,11 @@ function draw()
   currentAngleY += rotSpeedY;
   currentAngleZ += rotSpeedZ;
 
+  //Being used for sun position
   let mousePosition = {x : mouseX, y : mouseY, z : 40 + sliderSunZ.value()}
 
 
+  //Preform actions on objects
   for(let object of objects)
   {
     if(object.type == "Box")

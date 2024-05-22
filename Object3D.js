@@ -2,9 +2,9 @@ class Object3D
 {
   constructor(xPos, yPos, zPos, points3D, facePoints, faceColor, type)
   {
-      this.type = type //Public
+      this.type = type //Public variable
 
-      //Private
+      //Private variables
       this.xPos = xPos;
       this.yPos = yPos;
       this.zPos = zPos;
@@ -83,9 +83,6 @@ class Object3D
         this.faceCurrentColor[face][i] = this.faceColor[face][i] * (this.calculateLightIntensity(sunPosition, this.centerPoint, face) + 1) / 2; // (..+1)/2 because before, the inteval was from -1 to 1 | Now 0 to 1
       }
     }
-
-    console.log(this.faceCurrentColor);
-    console.log(this.faceColor);
   }
   
   setFaceColor(faceName, rgbValue)
