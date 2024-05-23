@@ -1,12 +1,15 @@
 const canvasX = 1000;
 const canvasY = 1000;
 
+//Following values should become a class - Encapsulation
 let FOV = -800; //Distance from cam to actual Screen
 let camOffset = {x : 400, y: 400, z : FOV};
 const moveSpeed = 5;
 
 let objects = [];
 
+
+//Following values are for slides, so they can be removed
 const rotSpeedX = .5;
 const rotSpeedY = .7;
 const rotSpeedZ = .11;
@@ -182,7 +185,7 @@ function draw()
   movecam();
 }
 
-//Math funcitons
+//Math funcitons (Should they be apart of the Object3D class? - Would improve encapupsulation)
 function dotPlacementCalculator(x, y, z)
 {
   //Make a 3D point apear in 2D space
@@ -272,7 +275,7 @@ function calculate3DCrossProduct(vec1, vec2) {
 }
 
 
-//Other functions
+//Other functions | Should be apart of the camera class
 function movecam()
 {
   if(keyCode == 87) //w

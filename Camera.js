@@ -10,7 +10,7 @@ class Camera{
 
     movement()
     {
-        function keyPressed()
+        function keyPressed() 
         {
             if(keyCode == 87) //w
             {
@@ -39,8 +39,8 @@ class Camera{
 
     renderObjectsInOrder(objects)
     {
+        //Preform task that render objects in one correct order
+            //Meaning that those closest to the cam gets rendered first
 
     }
-
-    
 }
