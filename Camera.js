@@ -40,7 +40,6 @@ class Camera{
     renderObjectsInOrder(objects)
     {
         //Preform task that render objects in one correct order
-            //Meaning that those closest to the cam gets rendered first
-
+        //Meaning that those closest to the cam gets rendered first
     }
 }

@@ -71,8 +71,8 @@ class Box extends Object3D
     {
       strokeWeight(10);
       const lineLen = 400;
-      let lp1 = dotPlacementCalculator(this.xPos - lineLen/2 * objectsAxes.x, this.yPos - lineLen/2 * objectsAxes.y, this.zPos - lineLen/2 * objectsAxes.z)
-      let lp2 = dotPlacementCalculator(this.xPos + lineLen/2 * objectsAxes.x, this.yPos + lineLen/2 * objectsAxes.y, this.zPos + lineLen/2 * objectsAxes.z)
+      let lp1 = this.dotPlacementCalculator(this.xPos - lineLen/2 * objectsAxes.x, this.yPos - lineLen/2 * objectsAxes.y, this.zPos - lineLen/2 * objectsAxes.z)
+      let lp2 = this.dotPlacementCalculator(this.xPos + lineLen/2 * objectsAxes.x, this.yPos + lineLen/2 * objectsAxes.y, this.zPos + lineLen/2 * objectsAxes.z)
       line(lp1.x, lp1.y, lp2.x, lp2.y);
     }
 
@@ -98,9 +98,9 @@ class Box extends Object3D
             
       //2. Rotate vector relative to z-axis
       let newVec = {
-        x : vecToRotateAroundAxis.x * cos(angle) + (calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).x) * sin(angle) + rotationalAxis.x * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
-        y : vecToRotateAroundAxis.y * cos(angle) + (calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).y) * sin(angle) + rotationalAxis.y * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
-        z : vecToRotateAroundAxis.z * cos(angle) + (calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).z) * sin(angle) + rotationalAxis.z * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
+        x : vecToRotateAroundAxis.x * cos(angle) + (this.calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).x) * sin(angle) + rotationalAxis.x * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
+        y : vecToRotateAroundAxis.y * cos(angle) + (this.calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).y) * sin(angle) + rotationalAxis.y * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
+        z : vecToRotateAroundAxis.z * cos(angle) + (this.calculate3DCrossProduct(vecToRotateAroundAxis, rotationalAxis).z) * sin(angle) + rotationalAxis.z * (calculateDotProductOf3DVector(rotationalAxis, vecToRotateAroundAxis)) * (1 - cos(angle)),
       }
 
       //Un-relative the points (Calculate exact position)
@@ -113,14 +113,14 @@ class Box extends Object3D
   updateLocalAxes()
   {
     //Following works, though only with boxes :(
-    const xFacePoint = calculateAveragePointFromPoints(this.facePoints["right"]);
-    this.xAxisLocal = calculate3DUnitVector(calculate3DVector(this.centerPoint, xFacePoint));
+    const xFacePoint = this.calculateAveragePointFromPoints(this.facePoints["right"]);
+    this.xAxisLocal = calculate3DUnitVector(this.calculate3DVector(this.centerPoint, xFacePoint));
     
-    const yFacePoint = calculateAveragePointFromPoints(this.facePoints["top"])
-    this.yAxisLocal = calculate3DUnitVector(calculate3DVector(this.centerPoint, yFacePoint));
+    const yFacePoint = this.calculateAveragePointFromPoints(this.facePoints["top"])
+    this.yAxisLocal = calculate3DUnitVector(this.calculate3DVector(this.centerPoint, yFacePoint));
     
-    const zFacePoint = calculateAveragePointFromPoints(this.facePoints["front"]);
-    this.zAxisLocal = calculate3DUnitVector(calculate3DVector(this.centerPoint, zFacePoint));    
+    const zFacePoint = this.calculateAveragePointFromPoints(this.facePoints["front"]);
+    this.zAxisLocal = calculate3DUnitVector(this.calculate3DVector(this.centerPoint, zFacePoint));    
   }
 }
 
