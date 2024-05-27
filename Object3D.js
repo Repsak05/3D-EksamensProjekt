@@ -25,28 +25,23 @@ class Object3D
   //Public functions
   draw()
   {
-    //Draw box rects in correct order
-    let arrWithSideAndZIndex = [];
-
+    //Only draw faces that can be seen
     for(let keys in this.facePoints)
     {
-        //Get average point of the face
-        const faceCorners = this.facePoints[keys];
-        const averageFacePoint = this.calculateAveragePointFromPoints(faceCorners);
+      const camPosition = {x : 0, y : 0, z : 1};
+      //Get average point of the face
+      const averageFacePoint = this.calculateAveragePointFromPoints(this.facePoints[keys]);
+      
+      const vecAvgToCenter = this.calculate3DVector(averageFacePoint, this.centerPoint); //Vec from avg -> center
+      const vecCamToAvg = this.calculate3DVector(camPosition, averageFacePoint); //
 
-        //Insert their face-name and their z-index
-        arrWithSideAndZIndex.push([keys, averageFacePoint.z]);
-    }
-
-    //Sort them by z-index
-    arrWithSideAndZIndex.sort((a, b) => b[1] - a[1]);
-
-    //Display each side in correct order.
-    for(let sideAndZIndex of arrWithSideAndZIndex)
-    {
-        fill(this.faceCurrentColor[sideAndZIndex[0]]);
-        this.drawTriangleFromArrayWith3DPoints(this.facePoints[sideAndZIndex[0]]);
-    }
+      //Determine wether the face should be displayed:
+      if(this.calculateDotProductOf3DVector(vecAvgToCenter, vecCamToAvg) > 0)
+      {
+        fill(this.faceCurrentColor[keys]);
+        this.drawTriangleFromArrayWith3DPoints(this.facePoints[keys]);
+      }
+    } 
   }
 
   rotationX(angle) //Rotate around x-axis

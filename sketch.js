@@ -8,11 +8,15 @@ const moveSpeed = 5;
 
 let objects = [];
 
+let sliderSunZ;
 
 function setup()
 {
   angleMode(DEGREES);
   createCanvas(canvasX, canvasY);
+
+  sliderSunZ = createSlider(-100, 200, 10);
+  sliderSunZ.position(10,10);
 
   //Intialize objects
   for(let x = -80; x < 120; x += 30)
@@ -32,6 +36,7 @@ function setup()
     }
   }
 
+
 }
 
 function draw()
@@ -39,7 +44,7 @@ function draw()
   background(220);
 
   //Being used for sun position
-  let mousePosition = {x : mouseX, y : mouseY, z : 120}
+  let mousePosition = {x : mouseX, y : mouseY, z : sliderSunZ.value()};
 
   //Preform actions on objects
   for(let object of objects)
