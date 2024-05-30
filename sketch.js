@@ -36,6 +36,7 @@ function setup()
     }
   }
 
+  // objects.push(new Box(30, 20 , 200, 50, 10 ,30));
 
 }
 
@@ -46,7 +47,7 @@ function draw()
   //Being used for sun position
   let mousePosition = {x : mouseX, y : mouseY, z : sliderSunZ.value()};
 
-  //Preform actions on objects
+  // Preform actions on objects
   for(let object of objects)
   {
     if(object.getType == "Box")
@@ -63,6 +64,7 @@ function draw()
     object.ajustLighting(mousePosition);
     object.draw();
   }
+
 
   movecam();
 }

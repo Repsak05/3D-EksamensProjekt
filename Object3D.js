@@ -28,15 +28,20 @@ class Object3D
     //Only draw faces that can be seen
     for(let keys in this.facePoints)
     {
-      const camPosition = {x : 0, y : 0, z : 1};
+
+      const camPosition = {x : 0, y : 0, z : 1}; //Should change depending on movement
+
       //Get average point of the face
       const averageFacePoint = this.calculateAveragePointFromPoints(this.facePoints[keys]);
       
-      const vecAvgToCenter = this.calculate3DVector(averageFacePoint, this.centerPoint); //Vec from avg -> center
+      //Reference vector -> Not perfect
+      const vecAvgToCenter = this.calculate3DVector(averageFacePoint, this.centerPoint); //Vec from avg -> center: Not perfect
+      let perpendicularOnFace = this.calculate3DVectorPerpendicularToFace(this.facePoints[keys], vecAvgToCenter); //Perfect
+
       const vecCamToAvg = this.calculate3DVector(camPosition, averageFacePoint); //
 
       //Determine wether the face should be displayed:
-      if(this.calculateDotProductOf3DVector(vecAvgToCenter, vecCamToAvg) > 0)
+      if(this.calculateDotProductOf3DVector(perpendicularOnFace, vecCamToAvg) > 0)
       {
         fill(this.faceCurrentColor[keys]);
         this.drawTriangleFromArrayWith3DPoints(this.facePoints[keys]);
@@ -131,7 +136,9 @@ class Object3D
 
     //Calculate the vectors
     const vecToSun = this.calculate3DVector(boxCenterFace, sunPosition);
-    const vecPerpendicularOnBoxSide = this.calculate3DVector(boxCenter, boxCenterFace);
+
+    const vecAlmostPerpendicularOnBoxSide = this.calculate3DVector(boxCenter, boxCenterFace);
+    const vecPerpendicularOnBoxSide = this.calculate3DVectorPerpendicularToFace(this.facePoints[faceName], vecAlmostPerpendicularOnBoxSide, true);
 
     //Remake to unitVectores, so that the distance to sun, doesnt matter
     const unitVecToSun = this.calculate3DUnitVector(vecToSun);
@@ -230,5 +237,26 @@ class Object3D
     const y = vec1.z * vec2.x - vec1.x * vec2.z;
     const z = vec1.x * vec2.y - vec1.y * vec2.x;
     return { x: x, y: y, z: z };
+  }
+
+  calculate3DVectorPerpendicularToFace(facePoints, vecToCenter, dirToCenter = true)
+  {
+    if(facePoints.length >= 3)
+    {
+      const v1 = this.calculate3DVector(facePoints[0], facePoints[1]);
+      const v2 = this.calculate3DVector(facePoints[2], facePoints[1]);
+      const cross = this.calculate3DCrossProduct(v1, v2);
+
+      const fakeDir = dirToCenter ? vecToCenter : {x : vecToCenter.x * -1, y: vecToCenter.y * -1, z : vecToCenter.z * -1};
+
+      if(this.calculateDotProductOf3DVector(cross, fakeDir) < 0)
+      {
+        cross.x *= -1;
+        cross.y *= -1;
+        cross.z *= -1;
+      }
+
+      return cross;
+    }
   }
 }
