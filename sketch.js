@@ -10,6 +10,8 @@ let objects = [];
 
 let sliderSunZ;
 
+
+let ob1;
 function setup()
 {
   angleMode(DEGREES);
@@ -18,26 +20,28 @@ function setup()
   sliderSunZ = createSlider(-100, 200, 10);
   sliderSunZ.position(10,10);
 
-  //Intialize objects
-  for(let x = -80; x < 120; x += 30)
-  {
-    for(let y = -80; y < 120; y += 40)
-    {
-      if(x < -20)
-      {
-        objects.push(new Box(x, y, 200, random(10,20), random(10,20), random(10,20)));
+  // //Intialize objects
+  // for(let x = -80; x < 120; x += 30)
+  // {
+  //   for(let y = -80; y < 120; y += 40)
+  //   {
+  //     if(x < -20)
+  //     {
+  //       objects.push(new Box(x, y, 200, random(10,20), random(10,20), random(10,20)));
 
-      } else if (x < 20){ 
-        objects.push(new Tetrahedron(x, y, 200, random(10,40)));
+  //     } else if (x < 20){ 
+  //       objects.push(new Tetrahedron(x, y, 200, random(10,40)));
 
-      } else {
-        objects.push(new Prism(x, y, 200, random(10,25), random(10,25), random(10,25)));
-      }
-    }
-  }
-
-  // objects.push(new Box(30, 20 , 200, 50, 10 ,30));
-
+  //     } else {
+    //       objects.push(new Prism(x, y, 200, random(10,25), random(10,25), random(10,25)));
+    //     }
+    //   }
+    // }
+    
+    objects.push(new Box(30, 20 , 200, 50, 10 ,30));
+    
+    ob1 = new Polygon(-50, 0, 200, 3, 30, 30);
+    objects.push(ob1);
 }
 
 function draw()
@@ -64,6 +68,9 @@ function draw()
     object.ajustLighting(mousePosition);
     object.draw();
   }
+
+  ob1.draw();
+
 
 
   movecam();
@@ -99,4 +106,21 @@ function movecam()
     camOffset.y += moveSpeed;
   }
 
+}
+
+
+function convertToPolær(xPos,yPos)
+{
+let theta = atan(yPos/xPos);
+let length = sqrt(xPos*xPos + yPos*yPos);
+
+return {angle : theta, len : length};
+}
+
+function convertToCartesian(angle, len)
+{
+let xPos = cos(angle) * len;
+let yPos = sin(angle) * len;
+
+return {x : xPos, y : yPos};
 }
