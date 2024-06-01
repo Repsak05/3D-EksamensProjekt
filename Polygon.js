@@ -40,24 +40,24 @@ class Polygon extends Object3D
         facePoints["b"] = Object.values(points3D).slice(Math.floor(Object.entries(points3D).length / 2));
         
         for(let i = 0; i < Math.ceil(Object.entries(points3D).length) / 2; i++)
-            {
-                //FRONT 
-                const val1 = points3D[Object.keys(points3D)[i]];
-                const val2 = points3D[Object.keys(points3D)[(i + 1) % (Object.entries(points3D).length / 2)]];
-                
-                //BACK
-                const val3 = points3D[Object.keys(points3D)[i + Object.entries(points3D).length / 2]];
-                const val4 = points3D[Object.keys(points3D)[(i + 1) % (Object.entries(points3D).length / 2) + Object.entries(points3D).length/2]];
-                
-                facePoints["s" + (i+1)] = [val1, val2, val3, val4];
-            }
+        {
+            //FRONT 
+            const val1 = points3D[Object.keys(points3D)[i]];
+            const val2 = points3D[Object.keys(points3D)[(i + 1) % (Object.entries(points3D).length / 2)]];
             
-            //Give each face a Color:
-            let faceColor = [];
-            for(let keys in facePoints)
-                {
-                    faceColor[keys] = [random(0, 255), random(0, 255), random(0, 255)];
-                }
+            //BACK
+            const val3 = points3D[Object.keys(points3D)[i + Object.entries(points3D).length / 2]];
+            const val4 = points3D[Object.keys(points3D)[(i + 1) % (Object.entries(points3D).length / 2) + Object.entries(points3D).length/2]];
+            
+            facePoints["s" + (i+1)] = [val1, val2, val4, val3];
+        }
+            
+        //Give each face a Color:
+        let faceColor = [];
+        for(let keys in facePoints)
+        {
+            faceColor[keys] = [random(0, 255), random(0, 255), random(0, 255)];
+        }
                
         console.log(points3D);
         console.log(facePoints);

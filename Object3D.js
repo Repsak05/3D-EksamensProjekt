@@ -183,7 +183,20 @@ class Object3D
       triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
       triangle(p1.x, p1.y, p3.x, p3.y, p4.x, p4.y);
 
-    } else {
+    } else if (arr.length > 4){
+
+      const p1 = this.dotPlacementCalculator(arr[0].x, arr[0].y, arr[0].z);
+
+      for(let i = 1; i < arr.length; i++)
+      {
+
+        const p2 = this.dotPlacementCalculator(arr[i].x, arr[i].y, arr[i].z);
+        const p3 = this.dotPlacementCalculator(arr[(i+1)%(arr.length)].x, arr[(i+1)%(arr.length)].y, arr[(i+1)%(arr.length)].z);
+
+        triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+      }
+
+    }else {
       console.log("Arr has invalid length to create triangle");
     }
   }

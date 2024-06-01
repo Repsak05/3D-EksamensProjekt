@@ -40,7 +40,7 @@ function setup()
     
     objects.push(new Box(30, 20 , 200, 50, 10 ,30));
     
-    ob1 = new Polygon(-50, 0, 200, 3, 30, 30);
+    ob1 = new Polygon(-50, 0, 200, 5, 30, 30);
     objects.push(ob1);
 }
 
