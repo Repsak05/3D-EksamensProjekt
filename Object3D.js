@@ -67,7 +67,7 @@ class Object3D
   ajustLighting(sunPosition)
   {
     //Get sun's 3D position
-    sunPosition = {x : (sunPosition.x - camOffset.x) / (abs(FOV) / sunPosition.z) , y : (sunPosition.y - camOffset.y) / (abs(FOV) / sunPosition.z), z : sunPosition.z};
+    sunPosition = {x : (sunPosition.x - camOffset.x) / (abs(camOffset.z) / sunPosition.z) , y : (sunPosition.y - camOffset.y) / (abs(camOffset.z) / sunPosition.z), z : sunPosition.z};
     let circleSunPos = this.dotPlacementCalculator(sunPosition.x, sunPosition.y, sunPosition.z);
     
     fill(0);
@@ -153,8 +153,8 @@ class Object3D
   dotPlacementCalculator(x, y, z)
   {
     //Make a 3D point apear in 2D space
-    let x2D = (x * abs(FOV)) / z + camOffset.x;
-    let y2D = (y * abs(FOV)) / z + camOffset.y;
+    let x2D = (x * abs(camOffset.z)) / z + camOffset.x;
+    let y2D = (y * abs(camOffset.z)) / z + camOffset.y;
 
     return {x : x2D, y : y2D};
   }

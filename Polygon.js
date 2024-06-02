@@ -2,29 +2,28 @@ class Polygon extends Object3D
 {
     constructor(xPos, yPos, zPos, numberOfPoints, length, height)
     {
-        let totalAngle = 360;
-        let angleBetween = 360 / numberOfPoints;
+        const totalAngle = 360;
+        const angleBetween = 360 / numberOfPoints;
 
+        //Calculate 2D polygon placement of point
         let points = [];
-
         if(numberOfPoints > 0)
         {
             const startingAngleDir = {x: 0, y: 1};
-            const val1 = convertToPolær(startingAngleDir.x, startingAngleDir.y);
+            const startingAngle = atan(startingAngleDir.y / startingAngleDir.x)
+
             for(let angle = 0; angle < totalAngle; angle += angleBetween)
             {
-                const val = convertToCartesian(val1.angle + angle, length);
-                points.push(val);
+                const pointPosition = {x : cos(startingAngle + angle) * length, y : sin(startingAngle + angle) * length}
+                points.push(pointPosition);
             }
         }
 
-        //Calculate each points
+        //Calculate each 3D points with depth
         let points3D = [];
-
-        const fb = [height, -height];
         let pointNumber = 0;
 
-        for(let face of fb)
+        for(let face of [height, -height])
         {
             for(let point of points)
             {
@@ -33,7 +32,7 @@ class Polygon extends Object3D
             }
         }
 
-        //Calculate relation between points that create a face
+        //Calculate relation between points that creates a face
         let facePoints = [];
 
         facePoints["f"] = Object.values(points3D).slice(0, Math.floor(Object.entries(points3D).length / 2));
@@ -59,10 +58,6 @@ class Polygon extends Object3D
             faceColor[keys] = [random(0, 255), random(0, 255), random(0, 255)];
         }
                
-        console.log(points3D);
-        console.log(facePoints);
-        console.log(faceColor);
-
         super(xPos, yPos, zPos, points3D, facePoints, faceColor, "Polygon");
     }
 }

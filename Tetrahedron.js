@@ -26,7 +26,7 @@ class Tetrahedron extends Object3D
             bottom : [random(0, 255), random(0, 255), random(0, 255)],
         }
 
-        //Send parameters to parent-class (no .this)
+        //Send parameters to parent-class
         super(xPos, yPos, zPos, points3D, facePoints, faceColor, "Tetrahedron");
     }
 }
